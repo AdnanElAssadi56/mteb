@@ -17,6 +17,7 @@ from mteb.overview import TASKS_REGISTRY, get_task, get_tasks
 
 from .benchmarks.benchmarks import Benchmark
 from .benchmarks.get_benchmark import BENCHMARK_REGISTRY, get_benchmark, get_benchmarks
+from .human_eval import RerankingHumanEval, launch_app
 
 __version__ = version("mteb")  # fetch version from install metadata
 
