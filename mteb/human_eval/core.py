@@ -30,14 +30,49 @@ class HumanEvalTask:
         self.random_seed = random_seed
         self.results = {}
         
-    def sample_dataset(self, dataset: Dataset, split: str = "test") -> Dataset:
+    def sample_dataset(self, dataset, split: str = "test", mteb_task=None):
         """Sample a subset of examples for human evaluation."""
-        if len(dataset[split]) <= self.sample_size:
-            return dataset[split]
+        # Special handling for reranking tasks
+        if dataset is None and mteb_task is not None:
+            # Reranking tasks store data differently - access through the task object
+            queries = mteb_task.queries.get(split, {})
+            corpus = mteb_task.corpus.get(split, {})
+            top_ranked = mteb_task.top_ranked.get(split, {})
             
-        random.seed(self.random_seed)
-        indices = random.sample(range(len(dataset[split])), self.sample_size)
-        return dataset[split].select(indices)
+            # Create samples with query and ranked documents
+            samples = []
+            for query_id, query in queries.items():
+                if query_id in top_ranked:
+                    doc_ids = top_ranked[query_id]
+                    documents = [corpus[doc_id]['text'] for doc_id in doc_ids if doc_id in corpus]
+                    
+                    if documents:  # Only add if we have documents
+                        samples.append({
+                            'id': query_id,
+                            'query': query['text'],
+                            'candidates': documents,
+                            'doc_ids': doc_ids
+                        })
+            
+            # Sample from the created dataset
+            if len(samples) <= self.sample_size:
+                return samples
+            
+            random.seed(self.random_seed)
+            sampled_indices = random.sample(range(len(samples)), self.sample_size)
+            return [samples[i] for i in sampled_indices]
+        
+        # Original code for standard datasets with splits
+        if dataset is not None:
+            if isinstance(dataset, dict) and split in dataset:
+                if len(dataset[split]) <= self.sample_size:
+                    return dataset[split]
+                    
+                random.seed(self.random_seed)
+                indices = random.sample(range(len(dataset[split])), self.sample_size)
+                return dataset[split].select(indices)
+        
+        raise ValueError(f"Dataset format not recognized or split '{split}' not found.")
     
     def prepare_for_evaluation(self, dataset: Dataset) -> Dict[str, Any]:
         """Convert a dataset into a format suitable for human annotation."""
