@@ -1,4 +1,3 @@
-from .tasks.reranking import RerankingHumanEval
-from .interfaces.gradio_app import launch_app
+from .reranking import RerankingHumanEval
 
-__all__ = ["RerankingHumanEval", "launch_app"]
+__all__ = ["RerankingHumanEval"]
