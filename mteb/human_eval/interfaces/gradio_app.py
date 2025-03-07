@@ -3,31 +3,23 @@ import json
 import numpy as np
 import os
 from pathlib import Path
-import pandas as pd
 from typing import Dict, List, Any
 
 def create_reranking_interface(task_data: Dict[str, Any]):
     """Create a Gradio interface for reranking evaluation."""
     samples = task_data["samples"]
     results = {"task_name": task_data["task_name"], "task_type": "reranking", "annotations": []}
-    
-    # Track which samples have been completed
     completed_samples = {s["id"]: False for s in samples}
     
     def save_ranking(rankings, sample_id):
         """Save the current set of rankings."""
         # Check if all documents have rankings
-        all_ranked = all(r and r.strip() for r in rankings)
+        all_ranked = all(r is not None and r != "" for r in rankings)
         if not all_ranked:
             return "⚠️ Please assign a rank to all documents before submitting", f"Progress: {sum(completed_samples.values())}/{len(samples)}"
         
-        # Convert rankings to integers where possible
-        processed_rankings = []
-        for r in rankings:
-            try:
-                processed_rankings.append(int(r) if r else None)
-            except (ValueError, TypeError):
-                processed_rankings.append(None)
+        # Convert rankings to integers
+        processed_rankings = [int(r) for r in rankings]
         
         # Check for duplicate rankings
         if len(set(processed_rankings)) != len(processed_rankings):
@@ -88,22 +80,25 @@ def create_reranking_interface(task_data: Dict[str, Any]):
             
             gr.Markdown("## Documents to Rank:")
             
-            # Create a table for documents and rankings
-            headers = ["Document", "Rank"]
-            candidate_docs = samples[0]["candidates"]
+            # Create document displays and ranking dropdowns in synchronized pairs
+            doc_containers = []
+            ranking_dropdowns = []
             
-            # Create rows for each document
-            table_rows = []
-            for i, doc in enumerate(candidate_docs):
-                table_rows.append([doc, gr.Dropdown(choices=[str(j) for j in range(1, len(candidate_docs)+1)], label="")])
-            
-            table = gr.DataFrame(
-                headers=headers,
-                datatype=["str", "number"],
-                row_count=len(candidate_docs),
-                col_count=2,
-                value=table_rows
-            )
+            with gr.Column():
+                for i, doc in enumerate(samples[0]["candidates"]):
+                    with gr.Row():
+                        doc_box = gr.Textbox(
+                            value=doc, 
+                            label=f"Document {i+1}",
+                            interactive=False
+                        )
+                        dropdown = gr.Dropdown(
+                            choices=[str(j) for j in range(1, len(samples[0]["candidates"])+1)],
+                            label=f"Rank",
+                            value=""
+                        )
+                        doc_containers.append(doc_box)
+                        ranking_dropdowns.append(dropdown)
             
             with gr.Row():
                 prev_btn = gr.Button("← Previous Query", size="sm")
@@ -116,23 +111,27 @@ def create_reranking_interface(task_data: Dict[str, Any]):
             """Load a specific sample into the interface."""
             sample = next((s for s in samples if s["id"] == sample_id), None)
             if not sample:
-                return [query_text.value, table.value, current_sample_id.value, progress_text.value, status_box.value]
+                return [query_text.value] + [d.value for d in doc_containers] + [""] * len(ranking_dropdowns) + [current_sample_id.value, progress_text.value, status_box.value]
             
             # Update query
             new_query = sample["query"]
             
-            # Update table
-            new_table = []
-            for doc in sample["candidates"]:
-                new_table.append([doc, ""])
+            # Update documents
+            new_docs = []
+            for i, doc in enumerate(sample["candidates"]):
+                if i < len(doc_containers):
+                    new_docs.append(doc)
+                    
+            # Initialize rankings
+            new_rankings = [""] * len(ranking_dropdowns)
             
             # Check if this sample has already been annotated
             existing_annotation = next((a for a in results["annotations"] if a["sample_id"] == sample_id), None)
             if existing_annotation:
                 # Restore previous rankings
                 for i, rank in enumerate(existing_annotation["rankings"]):
-                    if i < len(new_table) and rank is not None:
-                        new_table[i][1] = str(rank)
+                    if i < len(new_rankings) and rank is not None:
+                        new_rankings[i] = str(rank)
             
             # Update progress
             current_idx = samples.index(sample)
@@ -142,7 +141,7 @@ def create_reranking_interface(task_data: Dict[str, Any]):
             if completed_samples[sample_id]:
                 new_status += " (already completed)"
             
-            return [new_query, new_table, sample["id"], new_progress, new_status]
+            return [new_query] + new_docs + new_rankings + [sample["id"], new_progress, new_status]
         
         def next_sample(current_id):
             """Load the next sample."""
@@ -178,10 +177,7 @@ def create_reranking_interface(task_data: Dict[str, Any]):
         # Connect events
         submit_btn.click(
             save_ranking,
-            inputs=[
-                table,
-                current_sample_id
-            ],
+            inputs=ranking_dropdowns + [current_sample_id],
             outputs=[status_box, progress_text]
         )
         
@@ -192,7 +188,7 @@ def create_reranking_interface(task_data: Dict[str, Any]):
         ).then(
             load_sample,
             inputs=[current_sample_id],
-            outputs=[query_text, table, current_sample_id, progress_text, status_box]
+            outputs=[query_text] + doc_containers + ranking_dropdowns + [current_sample_id, progress_text, status_box]
         )
         
         prev_btn.click(
@@ -202,7 +198,7 @@ def create_reranking_interface(task_data: Dict[str, Any]):
         ).then(
             load_sample,
             inputs=[current_sample_id],
-            outputs=[query_text, table, current_sample_id, progress_text, status_box]
+            outputs=[query_text] + doc_containers + ranking_dropdowns + [current_sample_id, progress_text, status_box]
         )
         
         save_btn.click(save_results, outputs=[status_box])
