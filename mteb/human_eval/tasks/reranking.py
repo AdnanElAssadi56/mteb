@@ -29,32 +29,44 @@ class RerankingHumanEval(HumanEvalTask):
             random_seed=random_seed,
         )
     
-    def prepare_for_evaluation(self, dataset: Dataset) -> Dict[str, Any]:
+    def prepare_for_evaluation(self, dataset):
         """Convert a reranking dataset into a format suitable for human annotation."""
         samples = []
-        for idx, example in enumerate(dataset):
-            # Handle different dataset formats
-            query = example.get("query", example.get("question", ""))
-            candidates = example.get("texts", example.get("documents", example.get("passages", [])))
-            relevance = example.get("relevance", example.get("labels", []))
-            
-            # Ensure we have necessary data
-            if not query or not candidates:
-                logger.warning(f"Skipping example {idx}: missing query or candidates")
-                continue
+        
+        # Handle the custom format from sample_dataset
+        if isinstance(dataset, list) and dataset and 'query' in dataset[0]:
+            for idx, example in enumerate(dataset):
+                sample = {
+                    'id': example.get('id', idx),
+                    'query': example['query'],
+                    'candidates': example['candidates'],
+                    # Add any other fields needed
+                }
+                samples.append(sample)
+        else:
+            # Original code for standard dataset format
+            for idx, example in enumerate(dataset):
+                # Handle different dataset formats
+                query = example.get("query", example.get("question", ""))
+                candidates = example.get("texts", example.get("documents", example.get("passages", [])))
+                relevance = example.get("relevance", example.get("labels", []))
                 
-            sample = {
-                "id": idx,
-                "query": query,
-                "candidates": candidates,
-                "true_relevance": relevance,  # Used for evaluation, not shown to human annotators
-            }
-            samples.append(sample)
+                # Ensure we have necessary data
+                if not query or not candidates:
+                    logger.warning(f"Skipping example {idx}: missing query or candidates")
+                    continue
+                    
+                sample = {
+                    "id": idx,
+                    "query": query,
+                    "candidates": candidates,
+                    "true_relevance": relevance,  # Used for evaluation, not shown to human annotators
+                }
+                samples.append(sample)
         
         instructions = (
             "Rank the candidate documents based on their relevance to the query. "
-            "Assign rank 1 to the most relevant document, 2 to the second most relevant, and so on. "
-            "If multiple documents are equally relevant, you can assign them the same rank."
+            "Assign rank 1 to the most relevant document, 2 to the second most relevant, and so on."
         )
         
         return {
