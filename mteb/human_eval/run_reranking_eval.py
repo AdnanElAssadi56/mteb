@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 def main():
     parser = argparse.ArgumentParser(description="Run human evaluation for MTEB reranking tasks")
-    parser.add_argument("--task", type=str, required=True, help="Name of the MTEB task to evaluate")
+    parser.add_argument("--task", type=str, help="Name of the MTEB task to evaluate")
     parser.add_argument("--sample-size", type=int, default=50, help="Number of samples to use")
     parser.add_argument("--output-dir", type=str, default="human_eval_data", help="Directory to save evaluation data")
     parser.add_argument("--seed", type=int, default=42, help="Random seed")
@@ -21,6 +21,12 @@ def main():
     parser.add_argument("--task-file", type=str, help="Path to the prepared task file (for evaluate mode)")
     
     args = parser.parse_args()
+    
+    # Check required arguments based on mode
+    if args.mode == "prepare" and not args.task:
+        parser.error("--task is required in prepare mode")
+    elif args.mode == "evaluate" and not args.task_file:
+        parser.error("--task-file is required in evaluate mode")
     
     if args.mode == "prepare":
         # Load the MTEB task
@@ -56,9 +62,6 @@ def main():
         print(f"\nTo run the evaluation interface, use: python -m mteb.human_eval.run_reranking_eval --mode evaluate --task-file {task_file}")
     
     elif args.mode == "evaluate":
-        if not args.task_file:
-            parser.error("--task-file is required in evaluate mode")
-        
         logger.info(f"Launching evaluation interface for: {args.task_file}")
         launch_app(args.task_file)
 

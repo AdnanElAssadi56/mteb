@@ -44,12 +44,14 @@ class HumanEvalTask:
             for query_id, query in queries.items():
                 if query_id in top_ranked:
                     doc_ids = top_ranked[query_id]
-                    documents = [corpus[doc_id]['text'] for doc_id in doc_ids if doc_id in corpus]
+                    documents = [corpus[doc_id] for doc_id in doc_ids if doc_id in corpus]
                     
                     if documents:  # Only add if we have documents
+                        # Handle both string and dict formats for queries
+                        query_text = query['text'] if isinstance(query, dict) else query
                         samples.append({
                             'id': query_id,
-                            'query': query['text'],
+                            'query': query_text,
                             'candidates': documents,
                             'doc_ids': doc_ids
                         })
