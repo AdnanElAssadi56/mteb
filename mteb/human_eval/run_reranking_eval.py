@@ -43,7 +43,7 @@ def main():
         # Sample dataset
         logger.info(f"Sampling {args.sample_size} examples...")
         split = mteb_task.metadata.eval_splits[0]  # Use first available evaluation split
-        sampled_dataset = evaluator.sample_dataset(mteb_task.dataset, split=split)
+        sampled_dataset = evaluator.sample_dataset(mteb_task.dataset, split=split, mteb_task=mteb_task)
         
         # Prepare task for human evaluation
         logger.info("Preparing task for human evaluation...")
