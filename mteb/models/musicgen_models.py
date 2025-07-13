@@ -128,19 +128,16 @@ class MusicgenWrapper(Wrapper):
                     return_tensors="pt",
                     padding=True,
                 ).to(self.device)
-                print(f"INPUTS SHAPE {input.shape}")
 
                 # Extract embeddings from the decoder
                 outputs = self.model.audio_encoder(
                     inputs.input_values,
                     return_dict=True,
                 )
-                print(f"OUTPUTS SHAPE {outputs.shape}")
                 # Use last hidden state for embeddings
                 last_hidden_state = outputs.audio_values
                 # Mean pooling over sequence dimension
                 embeddings = torch.mean(last_hidden_state, dim=1)
-                print(f"EMBEDDINGS SHAPE {embeddings.shape}")
                 all_embeddings.append(embeddings.cpu())
 
         return torch.cat(all_embeddings, dim=0)
