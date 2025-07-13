@@ -92,6 +92,7 @@ from mteb.models import (
     rerankers_monot5_based,
     richinfoai_models,
     ru_sentence_models,
+    salmonn_model,
     salesforce_models,
     seamlessm4t_models,
     searchmap_models,
