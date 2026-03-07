@@ -50,6 +50,35 @@ def mrr(
     return mrr_metrics
 
 
+def mrecall(
+    qrels: RelevantDocumentsType,
+    results: Mapping[str, Mapping[str, float]],
+    k_values: list[int],
+) -> dict[str, list[float]]:
+    mrecall_metrics = defaultdict(list)
+    k_max, top_hits = max(k_values), {}
+
+    for query_id, doc_scores in results.items():
+        top_hits[query_id] = [
+            item[0]
+            for item in sorted(
+                doc_scores.items(), key=lambda item: item[1], reverse=True
+            )[0:k_max]
+        ]
+
+    for query_id in top_hits:
+        query_relevant_docs = {
+            doc_id for doc_id in qrels[query_id] if qrels[query_id][doc_id] > 0
+        }
+        num_golds = len(query_relevant_docs)
+        for k in k_values:
+            preds = set(top_hits[query_id][:k])
+            relevant_in_top_k = len(preds.intersection(query_relevant_docs))
+            score = float(relevant_in_top_k == min(k, num_golds)) if num_golds > 0 else 0.0
+            mrecall_metrics[f"mRecall@{k}"].append(score)
+    return mrecall_metrics
+
+
 def recall_cap(
     qrels: RelevantDocumentsType,
     results: dict[str, dict[str, float]],
@@ -230,6 +259,7 @@ def evaluate_p_mrr_change(
             avg_mrr,
             naucs_mrr,
             hit_rate,
+            avg_mrecall,
         ) = calculate_retrieval_scores(group, qrels_sep[name], k_values)
         # add these to the followir_scores with name prefix
         scores_dict = make_score_dict(
@@ -241,6 +271,7 @@ def evaluate_p_mrr_change(
             avg_mrr,
             naucs_mrr,
             hit_rate,
+            avg_mrecall,
             {},
         )
         for key, value in scores_dict.items():
@@ -425,6 +456,7 @@ def make_score_dict(
     naucs: dict[str, float],
     naucs_mrr: dict[str, float],
     hit_rate: dict[str, float],
+    mrecall: dict[str, float],
     task_scores: dict[str, float],
     previous_results_model_meta: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
@@ -432,6 +464,7 @@ def make_score_dict(
         **{f"ndcg_at_{k.split('@')[1]}": v for (k, v) in ndcg.items()},
         **{f"map_at_{k.split('@')[1]}": v for (k, v) in _map.items()},
         **{f"recall_at_{k.split('@')[1]}": v for (k, v) in recall.items()},
+        **{f"mrecall_at_{k.split('@')[1]}": v for (k, v) in mrecall.items()},
         # For MTEB multichoice tasks, we report recall@1 as the main metric.
         # This follows how MTEB implements these tasks, and recall@1 here is equivalent to accuracy.
         "accuracy": recall["Recall@1"],
@@ -542,11 +575,11 @@ def max_over_subqueries(
         new_qrels[query_id_base] = qrels[query_id_full]  # all the same
 
     # now we have the new results, we can compute the scores
-    _, ndcg, _map, recall, precision, naucs, mrr, naucs_mrr, hit_rate = (
+    _, ndcg, _map, recall, precision, naucs, mrr, naucs_mrr, hit_rate, mrecall_scores = (
         calculate_retrieval_scores(new_results, new_qrels, k_values)
     )
     score_dict = make_score_dict(
-        ndcg, _map, recall, precision, naucs, mrr, naucs_mrr, hit_rate, {}
+        ndcg, _map, recall, precision, mrr, naucs, naucs_mrr, hit_rate, mrecall_scores, {}
     )
     return {"max_over_subqueries_" + k: v for k, v in score_dict.items()}
 
@@ -581,6 +614,7 @@ def calculate_retrieval_scores(
         hit_rate,
     ) = parse_metrics_from_scores(scores, k_values)
     mrr_scores = mrr(qrels, results, k_values)
+    mrecall_scores = mrecall(qrels, results, k_values)
 
     naucs = evaluate_abstention(
         results, {**all_ndcgs, **all_aps, **all_recalls, **all_precisions}
@@ -588,6 +622,7 @@ def calculate_retrieval_scores(
     naucs_mrr = evaluate_abstention(results, mrr_scores)
 
     avg_mrr = {k: sum(mrr_scores[k]) / len(mrr_scores[k]) for k in mrr_scores.keys()}
+    avg_mrecall = {k: sum(mrecall_scores[k]) / len(mrecall_scores[k]) for k in mrecall_scores.keys()}
     return RetrievalEvaluationResult(
         all_scores=scores,
         ndcg=ndcg,
@@ -598,6 +633,7 @@ def calculate_retrieval_scores(
         mrr=avg_mrr,
         naucs_mrr=naucs_mrr,
         hit_rate=hit_rate,
+        mrecall=avg_mrecall,
     )
 
 
