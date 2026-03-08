@@ -9,7 +9,7 @@ class LLMSprintDuplicateQuestionsPC(AbsTaskPairClassification):
         reference="https://www.aclweb.org/anthology/D18-1131/",
         dataset={
             "path": "mteb/llm-eval-sprint_duplicate_questions",
-            "revision": "ae85290b2ebbe32ced4ecb3c2bb5a3b2b95cde18",
+            "revision": "d1c6be04a5f84b606b758024ed9d3b3fb7e4029a",
         },
         type="PairClassification",
         category="t2t",
@@ -53,4 +53,12 @@ Tsujii, Jun{'}ichi},
         adapted_from=["SprintDuplicateQuestions"],
     )
 
+    label_column_name = "label"
+    instruction = (
+        "Determine whether two questions are duplicates (asking for the same information). "
+        "Output json with fields 'reasoning' and 'output' (1 if duplicate, 0 if not)."
+    )
+
+    def dataset_transform(self, num_proc: int | None = None) -> None:
+        pass
 

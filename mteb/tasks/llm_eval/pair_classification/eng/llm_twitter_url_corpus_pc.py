@@ -7,7 +7,7 @@ class LLMTwitterURLCorpusPC(AbsTaskPairClassification):
         name="LLMTwitterURLCorpusPC",
         dataset={
             "path": "mteb/llm-eval-twitter_url_corpus",
-            "revision": "c049aa7f88a91cbfaf00b1a030ed97c36a469f37",
+            "revision": "741fbe5cf43a594d8c37073d66baf8ab879281ce",
         },
         description="Paraphrase-Pairs of Tweets.",
         reference="https://languagenet.github.io/",
@@ -48,4 +48,11 @@ Riedel, Sebastian},
         adapted_from=["TwitterURLCorpus"],
     )
 
+    label_column_name = "label"
+    instruction = (
+        "Determine whether two tweets convey the same message (are paraphrases of each other). "
+        "Output json with fields 'reasoning' and 'output' (1 if paraphrase, 0 if not)."
+    )
 
+    def dataset_transform(self, num_proc: int | None = None) -> None:
+        pass

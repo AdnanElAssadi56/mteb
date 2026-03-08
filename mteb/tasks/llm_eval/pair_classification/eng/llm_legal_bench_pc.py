@@ -54,7 +54,7 @@ class LLMLegalBenchPC(AbsTaskPairClassification):
         reference="https://huggingface.co/datasets/nguha/legalbench",
         dataset={
             "path": "mteb/llm-eval-legalbench_pc",
-            "revision": "4fc7dd1bdafacdef55a6d59ce6f5e3ff0a9f5d36",
+            "revision": "a0217dc60ec5a45077e213a9538e845533523ed0",
         },
         type="PairClassification",
         category="t2t",
@@ -106,6 +106,12 @@ class LLMLegalBenchPC(AbsTaskPairClassification):
 }
 """,
         adapted_from=["LegalBenchPC"],
+    )
+
+    label_column_name = "label"
+    instruction = (
+        "Determine whether two legal text snippets form a matching pair (yes/correct/relevant = 1, no/incorrect/irrelevant = 0). "
+        "Output json with fields 'reasoning' and 'output' (1 or 0)."
     )
 
 

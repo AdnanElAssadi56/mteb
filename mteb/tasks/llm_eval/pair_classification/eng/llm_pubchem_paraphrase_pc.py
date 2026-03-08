@@ -9,7 +9,7 @@ class LLMPubChemParaphrasePC(AbsTaskPairClassification):
         reference="https://arxiv.org/abs/2412.00532",
         dataset={
             "path": "mteb/llm-eval-pubchem_ai_sentence_paraphrase_pc",
-            "revision": "ae85bbcebccdd3543d3278cce60ac9634b0714ed",
+            "revision": "a28102443924297d4d6e38d0b3babf4322d6606e",
         },
         type="PairClassification",
         category="t2t",
@@ -45,3 +45,12 @@ class LLMPubChemParaphrasePC(AbsTaskPairClassification):
 """,
         adapted_from=["PubChemAISentenceParaphrasePC"],
     )
+
+    label_column_name = "label"
+    instruction = (
+        "Determine whether two biomedical/chemistry sentences are paraphrases (convey the same scientific information). "
+        "Output json with fields 'reasoning' and 'output' (1 if paraphrase, 0 if not)."
+    )
+
+    def dataset_transform(self, num_proc: int | None = None) -> None:
+        pass
