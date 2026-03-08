@@ -52,6 +52,7 @@ class LLMArXivHierarchicalClusteringP2P(AbsTaskClustering):
             ds[split] = Dataset.from_dict({"labels": labels, "sentences": sentences})
         self.dataset = DatasetDict(ds)
         self.dataset = self.dataset.map(split_labels)
+        test_size = min(N_SAMPLES, len(self.dataset["test"]))
         self.dataset["test"] = self.dataset["test"].train_test_split(
-            test_size=N_SAMPLES, seed=self.seed
+            test_size=test_size, seed=self.seed
         )["test"]

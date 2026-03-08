@@ -1,3 +1,5 @@
+from datasets import Dataset, DatasetDict
+
 from mteb.abstasks.clustering import AbsTaskClustering
 from mteb.abstasks.task_metadata import TaskMetadata
 
@@ -51,8 +53,8 @@ Iryna Gurevych},
         for split in self.metadata.eval_splits:
             labels = self.dataset[split]["labels"]
             sentences = self.dataset[split]["sentences"]
-            ds[split] = self.dataset[split].from_dict(
+            ds[split] = Dataset.from_dict(
                 {"labels": labels, "sentences": sentences}
             )
 
-        self.dataset = self.dataset.from_dict(ds)
+        self.dataset = DatasetDict(ds)
