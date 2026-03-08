@@ -9,7 +9,7 @@ class LLMBanking77Classification(AbsTaskClassification):
         reference="https://arxiv.org/abs/2003.04807",
         dataset={
             "path": "mteb/llm-eval-banking77",
-            "revision": "fd47cb57c05a9e81f4dd268594fb12bb3b578fbd",
+            "revision": "2c82d499a4aab26ba0d98a4d37a8c838871d1bb1",
         },
         type="Classification",
         category="t2c",

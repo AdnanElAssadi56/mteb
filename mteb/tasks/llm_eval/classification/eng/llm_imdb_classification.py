@@ -8,7 +8,7 @@ class LLMImdbClassification(AbsTaskClassification):
         description="Large Movie Review Dataset This version corrects errors found in the original data. For details, see [pull request](https://github.com/embeddings-benchmark/mteb/pull/2900)",
         dataset={
             "path": "mteb/llm-eval-imdb",
-            "revision": "dac3286d4feb62a175327215a83f92ca9d9d28d2",
+            "revision": "c7cd15a51954e6862a5d29508c8d8db61cb8f1e8",
         },
         reference="http://www.aclweb.org/anthology/P11-1015",
         type="Classification",

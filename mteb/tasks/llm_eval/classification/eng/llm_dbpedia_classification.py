@@ -9,7 +9,7 @@ class LLMDBpediaClassification(AbsTaskClassification):
         reference="https://arxiv.org/abs/1509.01626",
         dataset={
             "path": "mteb/llm-eval-dbpedia_14",
-            "revision": "69e0851dde1899beedb6d97da535f0ba2b6f50c6",
+            "revision": "51f3208bf830260d9d564ca3ca2fb8804d21914c",
         },
         type="Classification",
         category="t2c",

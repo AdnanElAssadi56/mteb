@@ -9,7 +9,7 @@ class LLMFinancialPhrasebankClassification(AbsTaskClassification):
         reference="https://arxiv.org/abs/1307.5336",
         dataset={
             "path": "mteb/llm-eval-financial_phrasebank",
-            "revision": "4901e784af17c8064af2f369d18213a4a522c618",
+            "revision": "ea26452f96a505cd8e9d1849483359d5df1b52b3",
         },
         type="Classification",
         category="t2c",

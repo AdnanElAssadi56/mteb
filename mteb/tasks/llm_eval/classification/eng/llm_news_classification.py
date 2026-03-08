@@ -8,7 +8,7 @@ class LLMNewsClassification(AbsTaskClassification):
         description="Large News Classification Dataset This version corrects errors found in the original data. For details, see [pull request](https://github.com/embeddings-benchmark/mteb/pull/2900)",
         dataset={
             "path": "mteb/llm-eval-news_classification",
-            "revision": "ab12373cc3be2657471941800ed8616e04657697",
+            "revision": "32b25cbea8611da3c2936ce21f5e498ee0effa47",
         },
         reference="https://arxiv.org/abs/1509.01626",
         type="Classification",

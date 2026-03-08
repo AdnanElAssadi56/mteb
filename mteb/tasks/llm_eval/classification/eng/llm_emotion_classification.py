@@ -9,7 +9,7 @@ class LLMEmotionClassification(AbsTaskClassification):
         reference="https://www.aclweb.org/anthology/D18-1404",
         dataset={
             "path": "mteb/llm-eval-emotion",
-            "revision": "17fc5645b11db1149877de31a274456a9c607f8f",
+            "revision": "71d447b2ad9dcdcb2e5403d42cd04c709b61a8da",
         },
         type="Classification",
         category="t2c",
