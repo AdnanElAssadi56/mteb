@@ -1,5 +1,7 @@
 from .llm_arguana_retrieval_128k import LLMArguAnaRetrieval128k
+from .llm_arguana_retrieval_32k import LLMArguAnaRetrieval32k
 from .llm_fever_retrieval_128k import LLMFEVERRetrieval128k
+from .llm_fever_retrieval_32k import LLMFEVERRetrieval32k
 from .llm_fiqa_retrieval_128k import LLMFiQARetrieval128k
 from .llm_fiqa_retrieval_32k import LLMFiQARetrieval32k
 from .llm_hotpotqa_retrieval_128k import LLMHotpotQARetrieval128k
@@ -15,13 +17,19 @@ from .llm_qampari_retrieval_32k import LLMQAMPARIRetrieval32k
 from .llm_quest_retrieval_128k import LLMQUESTRetrieval128k
 from .llm_quest_retrieval_32k import LLMQUESTRetrieval32k
 from .llm_quora_retrieval_128k import LLMQuoraRetrieval128k
+from .llm_quora_retrieval_32k import LLMQuoraRetrieval32k
 from .llm_scifact_retrieval_128k import LLMSciFactRetrieval128k
+from .llm_scifact_retrieval_32k import LLMSciFactRetrieval32k
 from .llm_topiocqa_retrieval_128k import LLMTopiOCQARetrieval128k
 from .llm_topiocqa_retrieval_32k import LLMTopiOCQARetrieval32k
+from .llm_touche2020_retrieval_128k import LLMTouche2020Retrieval128k
+from .llm_touche2020_retrieval_32k import LLMTouche2020Retrieval32k
 
 __all__ = [
     "LLMArguAnaRetrieval128k",
+    "LLMArguAnaRetrieval32k",
     "LLMFEVERRetrieval128k",
+    "LLMFEVERRetrieval32k",
     "LLMFiQARetrieval128k",
     "LLMFiQARetrieval32k",
     "LLMHotpotQARetrieval128k",
@@ -37,7 +45,11 @@ __all__ = [
     "LLMQUESTRetrieval128k",
     "LLMQUESTRetrieval32k",
     "LLMQuoraRetrieval128k",
+    "LLMQuoraRetrieval32k",
     "LLMSciFactRetrieval128k",
+    "LLMSciFactRetrieval32k",
     "LLMTopiOCQARetrieval128k",
     "LLMTopiOCQARetrieval32k",
+    "LLMTouche2020Retrieval128k",
+    "LLMTouche2020Retrieval32k",
 ]

@@ -457,7 +457,7 @@ def make_score_dict(
     naucs_mrr: dict[str, float],
     hit_rate: dict[str, float],
     mrecall: dict[str, float],
-    task_scores: dict[str, float],
+    task_specific_scores: dict[str, float],
     previous_results_model_meta: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     return {

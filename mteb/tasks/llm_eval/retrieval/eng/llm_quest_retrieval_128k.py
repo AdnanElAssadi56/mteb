@@ -32,7 +32,7 @@ class LLMQUESTRetrieval128k(AbsTaskRetrieval):
         name="LLMQUESTRetrieval128k",
         dataset={
             "path": "mteb/loft-quest-128k",
-            "revision": "31e72459c9eb8a38f1a1c2f37d35e0e14d79ead9",
+            "revision": "fa0b5d677bfb3a129f16f15b78e4ad7b19ab078d",
         },
         description=(
             "QUEST is a retrieval dataset with entity-seeking queries requiring implicit set operations."

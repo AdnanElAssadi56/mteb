@@ -436,6 +436,7 @@ class AbsTaskRetrieval(AbsTask):
             mrr,
             naucs_mrr,
             hit_rate,
+            mrecall,
         ) = retriever.evaluate(
             data_split["relevant_docs"],
             results,
@@ -462,6 +463,7 @@ class AbsTaskRetrieval(AbsTask):
             hit_rate,
             task_specific_scores,
             self._previous_results_model_meta,
+            mrecall=mrecall,
         )
 
     def task_specific_scores(
