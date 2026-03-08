@@ -8,7 +8,7 @@ class LLMPubChemParaphrasePC(AbsTaskPairClassification):
         description="ChemTEB evaluates the performance of text embedding models on chemical domain data.",
         reference="https://arxiv.org/abs/2412.00532",
         dataset={
-            "path": "mteb/llm-eval-pubchem_ai_sentence_paraphrase_pc",
+            "path": "mteb/llm-eval-pubchem_paraphrase",
             "revision": "a28102443924297d4d6e38d0b3babf4322d6606e",
         },
         type="PairClassification",
