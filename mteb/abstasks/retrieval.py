@@ -461,9 +461,9 @@ class AbsTaskRetrieval(AbsTask):
             naucs,
             naucs_mrr,
             hit_rate,
+            mrecall,
             task_specific_scores,
             self._previous_results_model_meta,
-            mrecall=mrecall,
         )
 
     def task_specific_scores(
