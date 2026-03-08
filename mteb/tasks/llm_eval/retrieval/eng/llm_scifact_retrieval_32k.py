@@ -7,7 +7,7 @@ class LLMSciFactRetrieval32k(AbsTaskRetrieval):
         name="LLMSciFactRetrieval32k",
         dataset={
             "path": "mteb/loft-scifact-32k",
-            "revision": "1541ed7823c2bb464b00590cd51d59fe8fc01869",
+            "revision": "main",
         },
         description="SciFact verifies scientific claims using evidence from the research literature containing scientific paper abstracts.",
         reference="https://github.com/allenai/scifact",

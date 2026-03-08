@@ -11,7 +11,7 @@ class LLMFiQARetrieval32k(AbsTaskRetrieval):
         reference="https://sites.google.com/view/fiqa/",
         dataset={
             "path": "mteb/loft-fiqa-32k",
-            "revision": "eeb0c14bdf8dfbf27bf317a3a992bb3ecebbaee0",
+            "revision": "068171c1609f2e545a45fe5b56d28c40b06f8d0b",
         },
         type="Retrieval",
         category="t2t",

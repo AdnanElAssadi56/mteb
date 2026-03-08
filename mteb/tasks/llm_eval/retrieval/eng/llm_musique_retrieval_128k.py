@@ -33,7 +33,7 @@ class LLMMusiqueRetrieval128k(AbsTaskRetrieval):
         name="LLMMusiqueRetrieval128k",
         dataset={
             "path": "mteb/loft-musique-128k",
-            "revision": "c562c7b4d28b8fd3e8c2c0e1ad78f2ca4d6d91c8",
+            "revision": "f3cbd14cd5e944b124cc17e46631652406f8f206",
         },
         description=(
             "MuSiQue is a multi-hop question answering dataset where questions require reasoning over multiple documents."

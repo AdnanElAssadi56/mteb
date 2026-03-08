@@ -11,7 +11,7 @@ class LLMArguAnaRetrieval32k(AbsTaskRetrieval):
         reference="http://argumentation.bplaced.net/arguana/data",
         dataset={
             "path": "mteb/loft-arguana-32k",
-            "revision": "645851f6bb1c66f33aa399e2e1ff32ba62c601e4",
+            "revision": "main",
         },
         type="Retrieval",
         category="t2t",

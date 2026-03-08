@@ -7,7 +7,7 @@ class LLMNQRetrieval32k(AbsTaskRetrieval):
         name="LLMNQRetrieval32k",
         dataset={
             "path": "mteb/loft-nq-32k",
-            "revision": "4bcf0824accc01cb292676b8bcdeccbaf3339ed3",
+            "revision": "d81b5a78f79a18f870c221347f5e610697c5e63f",
         },
         description="NFCorpus: A Full-Text Learning to Rank Dataset for Medical Information Retrieval",
         reference="https://ai.google.com/research/NaturalQuestions/",

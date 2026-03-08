@@ -32,7 +32,7 @@ class LLMQAMPARIRetrieval32k(AbsTaskRetrieval):
         name="LLMQAMPARIRetrieval32k",
         dataset={
             "path": "mteb/loft-qampari-32k",
-            "revision": "d89a5c90a7dc1e5e47fa7e8ee553d1d28cde5f11",
+            "revision": "70ea886acfdf519b753730571070a7e36c160c01",
         },
         description=(
             "QAMPARI is an open-domain question answering benchmark with questions that have multiple answers "

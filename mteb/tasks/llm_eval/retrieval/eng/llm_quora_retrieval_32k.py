@@ -35,7 +35,7 @@ class LLMQuoraRetrieval32k(AbsTaskRetrieval):
         name="LLMQuoraRetrieval32k",
         dataset={
             "path": "mteb/loft-quora-32k",
-            "revision": "9aabd9d1b8ed994f4ec9d8eab0a61d04259b9a58",
+            "revision": "main",
         },
         description=(
             "QuoraRetrieval is based on questions that are marked as duplicates on the Quora platform. Given a"

@@ -33,7 +33,7 @@ class LLMTopiOCQARetrieval128k(AbsTaskRetrieval):
         name="LLMTopiOCQARetrieval128k",
         dataset={
             "path": "mteb/loft-topiocqa-128k",
-            "revision": "5bf8c50ad8f17e50d91e79ff8b00dd89da1fafe2",
+            "revision": "9bd8e7636ce11669d1771800dabce1c8c58baace",
         },
         description=(
             "TopiOCQA is a conversational question answering dataset with topic switching questions "

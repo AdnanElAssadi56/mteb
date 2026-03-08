@@ -48,7 +48,7 @@ class LLMHotpotQARetrieval32k(AbsTaskRetrieval):
         name="LLMHotpotQARetrieval32k",
         dataset={
             "path": "mteb/loft-hotpotqa-32k",
-            "revision": "c71fbbf91f0ccbc027de8f8a3ec3b9ab91dedb49",
+            "revision": "8f215c1739abf7761773178a167776ac8fcb2413",
         },
         description=(
             "HotpotQA is a question answering dataset featuring natural, multi-hop questions, with strong "

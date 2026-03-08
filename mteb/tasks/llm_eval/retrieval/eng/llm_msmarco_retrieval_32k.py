@@ -9,7 +9,7 @@ class LLMMSMARCORetrieval32k(AbsTaskRetrieval):
         name="LLMMSMARCORetrieval32k",
         dataset={
             "path": "mteb/loft-msmarco-32k",
-            "revision": "7a22349f4f9e51fc8f58bc889ebb07f8c2e12ec0",
+            "revision": "main",
         },
         description="MS MARCO is a collection of datasets focused on deep learning in search",
         reference="https://microsoft.github.io/msmarco/",
