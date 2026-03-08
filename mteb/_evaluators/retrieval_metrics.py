@@ -479,7 +479,7 @@ def make_score_dict(
             for k, v in naucs_mrr.items()
         },
         **{f"hit_rate_at_{k.split('@')[1]}": v for k, v in hit_rate.items()},
-        **task_scores,
+        **task_specific_scores,
         **(
             {"previous_results_model_meta": previous_results_model_meta}
             if previous_results_model_meta
