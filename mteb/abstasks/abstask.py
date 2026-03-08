@@ -193,6 +193,9 @@ class AbsTask(ABC):
         if subsets_to_run is not None:  # allow overwrites of pre-filtering
             hf_subsets = [s for s in hf_subsets if s in subsets_to_run]
 
+        kwargs.pop("output_folder", None)
+        encode_kwargs.pop("output_folder", None)
+
         for hf_subset in hf_subsets:
             logger.info(
                 f"Running task {self.metadata.name} ({split=}, {hf_subset=})..."
