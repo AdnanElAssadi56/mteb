@@ -4,7 +4,7 @@ from mteb.abstasks.task_metadata import TaskMetadata
 
 class LLMTwitterURLCorpusPC(AbsTaskPairClassification):
     metadata = TaskMetadata(
-        name="LLMTwitterURLCorpus",
+        name="LLMTwitterURLCorpusPC",
         dataset={
             "path": "mteb/llm-eval-twitter_url_corpus",
             "revision": "c049aa7f88a91cbfaf00b1a030ed97c36a469f37",

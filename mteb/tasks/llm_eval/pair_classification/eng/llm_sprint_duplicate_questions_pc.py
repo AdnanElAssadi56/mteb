@@ -4,7 +4,7 @@ from mteb.abstasks.task_metadata import TaskMetadata
 
 class LLMSprintDuplicateQuestionsPC(AbsTaskPairClassification):
     metadata = TaskMetadata(
-        name="LLMSprintDuplicateQuestions",
+        name="LLMSprintDuplicateQuestionsPC",
         description="Duplicate questions from the Sprint community.",
         reference="https://www.aclweb.org/anthology/D18-1131/",
         dataset={
