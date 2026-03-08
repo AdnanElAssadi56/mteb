@@ -263,6 +263,9 @@ class InstructSentenceTransformerModel(AbsEncoder):
                 f"Using instruction: '{instruction}' for task: '{task_metadata.name}'"
             )
 
+        # output_folder is passed by MTEB but not accepted by SentenceTransformer
+        kwargs.pop("output_folder", None)
+        
         embeddings = self.model.encode(
             sentences,
             prompt=instruction,
