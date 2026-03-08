@@ -1,8 +1,8 @@
-from mteb.abstasks.clustering import AbsTaskClustering
+from mteb.abstasks.clustering_legacy import AbsTaskClusteringLegacy
 from mteb.abstasks.task_metadata import TaskMetadata
 
 
-class LLMBigPatentClustering(AbsTaskClustering):
+class LLMBigPatentClustering(AbsTaskClusteringLegacy):
     max_depth = 1
     metadata = TaskMetadata(
         name="LLMBigPatentClustering",
@@ -31,8 +31,8 @@ class LLMBigPatentClustering(AbsTaskClustering):
         bibtex_citation=r"""
 @article{DBLP:journals/corr/abs-1906-03741,
   author = {Eva Sharma and
-Chen Li and
-Lu Wang},
+  Chen Li and
+  Lu Wang},
   bibsource = {dblp computer science bibliography, https://dblp.org},
   biburl = {https://dblp.org/rec/journals/corr/abs-1906-03741.bib},
   eprint = {1906.03741},
@@ -45,5 +45,6 @@ Lu Wang},
   year = {2019},
 }
 """,
-        adapted_from=["BigPatentClustering.v2"],
+        adapted_from=["BigPatentClustering"],
     )
+    instruction = "Cluster the following patent abstracts by their technology domain (e.g., chemistry, physics, mechanical engineering, electricity)."

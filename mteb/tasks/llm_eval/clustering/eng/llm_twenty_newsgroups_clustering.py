@@ -1,10 +1,8 @@
-from datasets import Dataset, DatasetDict
-
-from mteb.abstasks.clustering import AbsTaskClustering
+from mteb.abstasks.clustering_legacy import AbsTaskClusteringLegacy
 from mteb.abstasks.task_metadata import TaskMetadata
 
 
-class LLMTwentyNewsgroupsClustering(AbsTaskClustering):
+class LLMTwentyNewsgroupsClustering(AbsTaskClusteringLegacy):
     metadata = TaskMetadata(
         name="LLMTwentyNewsgroupsClustering",
         description="Clustering of the 20 Newsgroups dataset (subject only).",
@@ -42,19 +40,6 @@ class LLMTwentyNewsgroupsClustering(AbsTaskClustering):
 }
 """,
         prompt="Identify the topic or theme of the given news articles",
-        adapted_from=["TwentyNewsgroupsClustering.v2"],
+        adapted_from=["TwentyNewsgroupsClustering"],
     )
-
-    def dataset_transform(
-        self,
-        num_proc: int | None = None,
-    ):
-        ds = {}
-        for split in self.metadata.eval_splits:
-            labels = self.dataset[split]["labels"]
-            sentences = self.dataset[split]["sentences"]
-            ds[split] = Dataset.from_dict(
-                {"labels": labels, "sentences": sentences}
-            )
-
-        self.dataset = DatasetDict(ds)
+    instruction = "Cluster the following Usenet newsgroup posts by topic."

@@ -1,10 +1,8 @@
-from datasets import Dataset, DatasetDict
-
-from mteb.abstasks.clustering import AbsTaskClustering
+from mteb.abstasks.clustering_legacy import AbsTaskClusteringLegacy
 from mteb.abstasks.task_metadata import TaskMetadata
 
 
-class LLMRedditClusteringP2P(AbsTaskClustering):
+class LLMRedditClusteringP2P(AbsTaskClusteringLegacy):
     metadata = TaskMetadata(
         name="LLMRedditClusteringP2P",
         description="Clustering of title+posts from reddit. Clustering of 10 sets of 50k paragraphs and 40 sets of 10k paragraphs.",
@@ -30,9 +28,9 @@ class LLMRedditClusteringP2P(AbsTaskClustering):
 @article{geigle:2021:arxiv,
   archiveprefix = {arXiv},
   author = {Gregor Geigle and
-Nils Reimers and
-Andreas R{\"u}ckl{\'e} and
-Iryna Gurevych},
+  Nils Reimers and
+  Andreas R{\"u}ckl{\'e} and
+  Iryna Gurevych},
   eprint = {2104.07081},
   journal = {arXiv preprint},
   title = {TWEAC: Transformer with Extendable QA Agent Classifiers},
@@ -42,19 +40,6 @@ Iryna Gurevych},
 }
 """,
         prompt="Identify the topic or theme of Reddit posts based on the titles and posts",
-        adapted_from=["RedditClusteringP2P.v2"],
+        adapted_from=["RedditClusteringP2P"],
     )
-
-    def dataset_transform(
-        self,
-        num_proc: int | None = None,
-    ):
-        ds = {}
-        for split in self.metadata.eval_splits:
-            labels = self.dataset[split]["labels"]
-            sentences = self.dataset[split]["sentences"]
-            ds[split] = Dataset.from_dict(
-                {"labels": labels, "sentences": sentences}
-            )
-
-        self.dataset = DatasetDict(ds)
+    instruction = "Cluster the following Reddit posts by their subreddit community topic."
