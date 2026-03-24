@@ -1,0 +1,42 @@
+from mteb.abstasks.classification import AbsTaskClassification
+from mteb.abstasks.task_metadata import TaskMetadata
+
+
+class LLMBanking77Classification(AbsTaskClassification):
+    metadata = TaskMetadata(
+        name="LLMBanking77Classification",
+        description="Online banking queries annotated with intents — LLM eval subset (full test set).",
+        reference="https://arxiv.org/abs/2003.04807",
+        dataset={
+            "path": "mteb/llm-eval-banking77",
+            "revision": "2c82d499a4aab26ba0d98a4d37a8c838871d1bb1",
+        },
+        type="Classification",
+        category="t2c",
+        modalities=["text"],
+        eval_splits=["test"],
+        eval_langs=["eng-Latn"],
+        main_score="accuracy",
+        date=("2019-01-01", "2019-12-31"),
+        domains=["Written"],
+        task_subtypes=[],
+        license="mit",
+        annotations_creators="human-annotated",
+        dialect=[],
+        sample_creation="found",
+        bibtex_citation=r"""
+@inproceedings{casanueva-etal-2020-efficient,
+  author = {Casanueva, I{\~n}igo and Tem{\v{c}}inas, Tadas and Gerz, Daniela and Henderson, Matthew and Vuli{\'c}, Ivan},
+  booktitle = {Proceedings of the 2nd Workshop on Natural Language Processing for Conversational AI},
+  doi = {10.18653/v1/2020.nlp4convai-1.5},
+  month = jul,
+  pages = {38--45},
+  publisher = {Association for Computational Linguistics},
+  title = {Efficient Intent Detection with Dual Sentence Encoders},
+  url = {https://aclanthology.org/2020.nlp4convai-1.5},
+  year = {2020},
+}
+""",
+        prompt="Given an online banking query, find the corresponding intent",
+        adapted_from=["Banking77Classification"],
+    )
