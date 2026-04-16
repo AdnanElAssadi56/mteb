@@ -51,5 +51,5 @@ Dolan, Bill},
     )
 
     def dataset_transform(self, num_proc=None):
-        self.dataset = self.dataset.rename_column("sent1", "sentence1")
-        self.dataset = self.dataset.rename_column("sent2", "sentence2")
+        for lang in self.dataset:
+            self.dataset[lang] = self.dataset[lang].rename_column("label", "labels")

@@ -2,16 +2,16 @@ from mteb.abstasks.sts import AbsTaskSTS
 from mteb.abstasks.task_metadata import TaskMetadata
 
 _LANGUAGES_STS17 = {
-    "en": ["eng-Latn"],
-    "de": ["deu-Latn"],
-    "es": ["spa-Latn"],
-    "fr": ["fra-Latn"],
-    "it": ["ita-Latn"],
+    "en-de": ["eng-Latn", "deu-Latn"],
+    "en-en": ["eng-Latn"],
+    "es-es": ["spa-Latn"],
+    "fr-en": ["fra-Latn", "eng-Latn"],
+    "it-en": ["ita-Latn", "eng-Latn"],
 }
 
 
 class LLMSTS17(AbsTaskSTS):
-    fast_loading = True
+    fast_loading = False
     min_score = 0
     max_score = 5
 

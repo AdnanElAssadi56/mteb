@@ -37,6 +37,6 @@ class LLMBanking77Classification(AbsTaskClassification):
   year = {2020},
 }
 """,
-        prompt="Given an online banking query, find the corresponding intent",
+        prompt="Given a online banking query, find the corresponding intents",
         adapted_from=["Banking77Classification"],
     )

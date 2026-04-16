@@ -1,8 +1,8 @@
-from mteb.abstasks.clustering import AbsTaskClustering
+from mteb.abstasks.clustering_legacy import AbsTaskClusteringLegacy
 from mteb.abstasks.task_metadata import TaskMetadata
 
 
-class LLMArxivClusteringS2S(AbsTaskClustering):
+class LLMArxivClusteringS2S(AbsTaskClusteringLegacy):
     metadata = TaskMetadata(
         name="LLMArxivClusteringS2S",
         description="Clustering of titles from arxiv — LLM eval pre-sampled subset.",

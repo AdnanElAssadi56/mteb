@@ -251,6 +251,7 @@ from .vqa2_it2t_retrieval import VQA2IT2TRetrieval
 from .web_qa_t2it_retrieval import WebQAT2ITRetrieval
 from .web_qa_t2t_retrieval import WebQAT2TRetrieval
 from .wino_grande_retrieval import WinoGrande
+from .llm_eval import *
 
 __all__ = [
     "CUB200I2I",

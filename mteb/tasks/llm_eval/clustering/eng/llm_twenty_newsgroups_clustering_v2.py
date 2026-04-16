@@ -1,8 +1,8 @@
-from mteb.abstasks.clustering import AbsTaskClustering
+from mteb.abstasks.clustering_legacy import AbsTaskClusteringLegacy
 from mteb.abstasks.task_metadata import TaskMetadata
 
 
-class LLMTwentyNewsgroupsClusteringV2(AbsTaskClustering):
+class LLMTwentyNewsgroupsClusteringV2(AbsTaskClusteringLegacy):
     metadata = TaskMetadata(
         name="LLMTwentyNewsgroupsClusteringV2",
         description="Clustering of the 20 Newsgroups dataset (subject only) — LLM eval pre-sampled subset.",

@@ -5,6 +5,7 @@ from .clustering import *
 from .image_text_pair_classification import *
 from .instruction_reranking import *
 from .instruction_retrieval import *
+from .llm_eval import *
 from .multichoice import *
 from .multilabel_classification import *
 from .pair_classification import *

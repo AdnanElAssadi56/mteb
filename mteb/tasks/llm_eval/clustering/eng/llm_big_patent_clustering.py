@@ -1,8 +1,8 @@
-from mteb.abstasks.clustering import AbsTaskClustering
+from mteb.abstasks.clustering_legacy import AbsTaskClusteringLegacy
 from mteb.abstasks.task_metadata import TaskMetadata
 
 
-class LLMBigPatentClustering(AbsTaskClustering):
+class LLMBigPatentClustering(AbsTaskClusteringLegacy):
     metadata = TaskMetadata(
         name="LLMBigPatentClustering",
         description="Clustering of documents from the Big Patent dataset — LLM eval pre-sampled subset.",

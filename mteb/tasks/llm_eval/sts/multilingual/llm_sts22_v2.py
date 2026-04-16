@@ -2,8 +2,8 @@ from mteb.abstasks.sts import AbsTaskSTS
 from mteb.abstasks.task_metadata import TaskMetadata
 
 _LANGUAGES_STS22 = {
-    "en": ["eng-Latn"],
     "de": ["deu-Latn"],
+    "en": ["eng-Latn"],
     "es": ["spa-Latn"],
     "fr": ["fra-Latn"],
     "ru": ["rus-Cyrl"],
@@ -12,7 +12,7 @@ _LANGUAGES_STS22 = {
 
 
 class LLMSTS22v2(AbsTaskSTS):
-    fast_loading = True
+    fast_loading = False
     min_score = 1
     max_score = 4
 

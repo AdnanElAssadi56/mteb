@@ -1,4 +1,4 @@
-from mteb.abstasks.clustering import AbsTaskClustering
+from mteb.abstasks.clustering_legacy import AbsTaskClusteringLegacy
 from mteb.abstasks.task_metadata import TaskMetadata
 
 _GEIGLE_BIBTEX = r"""
@@ -18,7 +18,7 @@ Iryna Gurevych},
 """
 
 
-class LLMStackExchangeClusteringV2(AbsTaskClustering):
+class LLMStackExchangeClusteringV2(AbsTaskClusteringLegacy):
     metadata = TaskMetadata(
         name="LLMStackExchangeClusteringV2",
         description="Clustering of titles from 121 StackExchanges — LLM eval pre-sampled subset.",

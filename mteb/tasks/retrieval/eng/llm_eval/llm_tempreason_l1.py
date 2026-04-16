@@ -39,6 +39,8 @@ class LLMTempReasonL1(AbsTaskRetrieval):
   year = {2024},
 }
 """,
-        prompt={"query": "Given the following question about time, retrieve the correct answer."},
+        prompt={
+            "query": "Given the following question about time, retrieve the correct answer."
+        },
         adapted_from=["TempReasonL1"],
     )

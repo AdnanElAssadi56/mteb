@@ -1,8 +1,8 @@
-from mteb.abstasks.clustering import AbsTaskClustering
+from mteb.abstasks.clustering_legacy import AbsTaskClusteringLegacy
 from mteb.abstasks.task_metadata import TaskMetadata
 
 
-class LLMRedditClusteringP2P(AbsTaskClustering):
+class LLMRedditClusteringP2P(AbsTaskClusteringLegacy):
     metadata = TaskMetadata(
         name="LLMRedditClusteringP2P",
         description="Clustering of title+posts from reddit — LLM eval pre-sampled subset.",

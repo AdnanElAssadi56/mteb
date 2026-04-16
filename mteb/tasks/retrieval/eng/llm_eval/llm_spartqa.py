@@ -39,6 +39,8 @@ class LLMSpartQA(AbsTaskRetrieval):
   year = {2024},
 }
 """,
-        prompt={"query": "Given the following spatial reasoning question, retrieve the right answer."},
+        prompt={
+            "query": "Given the following spatial reasoning question, retrieve the right answer."
+        },
         adapted_from=["SpartQA"],
     )
