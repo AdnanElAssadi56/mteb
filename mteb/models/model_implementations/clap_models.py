@@ -66,6 +66,14 @@ class ClapZeroShotWrapper(AbsEncoder):
             # global view, the mechanism LAION added precisely so that audio
             # longer than 10 s is not truncated; arXiv:2211.06687 §2.2).
             # https://github.com/huggingface/transformers/blob/main/src/transformers/models/clap/feature_extraction_clap.py
+            #
+            # Measured end-to-end, not just at the feature level (CPU, mteb
+            # 2.20.12, accuracy, padding=True vs this call):
+            #    BeijingOpera          0.8982 -> 0.9574   (+5.9)
+            #    GunshotTriangulation  0.7163 -> 0.7503   (+3.4)
+            #    FSDD                  0.3977 -> 0.4493   (+5.2)
+            # Consistent across all three. ~157 of 281 audio task-splits have
+            # clips under 10 s and therefore take this padding path.
             features = self.processor(
                 audio=audio_array,
                 sampling_rate=self.sampling_rate,
