@@ -27,16 +27,14 @@ class QwenOmniWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str | None = None,
-        # SHARED BACKBONE, INCONSISTENT CAPS -- see note. This model's audio
-        # tower is the Qwen2.5-Omni (Whisper-lineage) encoder, whose feature
-        # pipeline maxes out at 1500 log-mel frames = 30 s, and whose docs advise
-        # keeping clips "under 30 seconds". mteb currently gives the five
-        # wrappers built on that same tower three different limits:
-        #   qwen_omni_lm 300 s | bidirlm 30 s | jina 30 s | lco None | colqwen None
-        # so scores on long-audio tasks partly reflect the wrapper, not the model.
-        # Left as-is pending a check of whether the processor actually consumes
-        # >30 s or silently truncates; do not "fix" one of these in isolation.
-        # https://huggingface.co/docs/transformers/model_doc/qwen2_5_omni
+        # Native, exact -- verified against the processor, not the docs. The
+        # Qwen2.5-Omni feature extractor declares `chunk_length: 300` /
+        # `n_samples: 4800000` / `nb_max_frames: 30000` at 16 kHz, and feeding it
+        # 10/30/60/300/400 s yields an attention mask summing to the true signal
+        # length, saturating at 30000 frames. So 300 s is the model's limit; the
+        # "keep clips under 30 seconds" line in the HF docs is usage advice for
+        # chat, not the encoder's bound.
+        # https://huggingface.co/Qwen/Qwen2.5-Omni-7B/blob/main/preprocessor_config.json
         max_audio_length_seconds: int = 300,
         # Frame budget: fps=2 is the vendor default -- Qwen ships `FPS = 2.0`
         # (with FPS_MIN_FRAMES=4, FPS_MAX_FRAMES=768) in qwen-vl-utils /
