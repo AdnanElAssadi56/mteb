@@ -29,29 +29,14 @@ class MSClapWrapper(AbsEncoder):
         self,
         model_name: str = "microsoft/msclap-2023",
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # Kept for API compatibility only -- it is not applied. MS-CLAP does its
-        # own length handling in `load_audio_into_tensor`: it crops/repeats every
-        # clip to `duration` from its config (5 s for 2022, 7 s for 2023). Note
-        # that for clips longer than `duration` that crop is a *random* window
-        # (`random.randrange`), so MS-CLAP scores are not reproducible run-to-run
-        # unless the global RNG is seeded.
-        # https://github.com/microsoft/CLAP/blob/main/msclap/CLAPWrapper.py
-        # https://github.com/microsoft/CLAP/blob/main/msclap/configs/config_2023.yml
-        max_audio_length_s: float = 7.0,
+        max_audio_length_s: float = 30.0,
         **kwargs: Any,
     ):
         from msclap import CLAP
 
         self.model_name = model_name
         self.device = device
-        # MS-CLAP's own configs declare `sampling_rate: 44100` for both the 2022
-        # and 2023 weights. We call `get_audio_embeddings(..., resample=False)`
-        # below, so the library does NOT resample for us -- whatever rate we write
-        # into the temp WAV is what its mel filterbank sees. At 48 kHz every
-        # spectral feature lands ~8.8% off.
-        # https://github.com/microsoft/CLAP/blob/main/msclap/configs/config_2022.yml
-        # https://github.com/microsoft/CLAP/blob/main/msclap/configs/config_2023.yml
-        self.sampling_rate = 44100
+        self.sampling_rate = 48000
         self.max_audio_length_s = max_audio_length_s
 
         if "2022" in self.model_name:
