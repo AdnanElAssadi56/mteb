@@ -127,6 +127,8 @@ class LanguageBindVideoWrapper(_LanguageBindBase):
         revision: str | None = None,
         fps: float | None = None,
         max_frames: int | None = None,
+        # Native: LanguageBind's video branch is trained on 8-frame clips.
+        # https://github.com/PKU-YuanGroup/LanguageBind
         num_frames: int | None = 8,
         max_samples: int | None = None,
         **kwargs: Any,

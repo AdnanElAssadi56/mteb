@@ -24,14 +24,24 @@ class SeamlessM4TWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # UNVERIFIED -- no source supports this value. The SeamlessM4T v2 model
-        # card states only that input "must be a 16 kHz waveform array" and
-        # declares no duration limit; the w2v-BERT 2.0 speech encoder is
-        # variable-length. 5 s was introduced with this file without a stated
-        # rationale and truncates most speech utterances (Fleurs/LibriSpeech
-        # average ~12 s), so it likely understates the model. Left unchanged
-        # pending a decision rather than swapped for another arbitrary number.
-        # https://huggingface.co/facebook/seamless-m4t-v2-large
+        # Origin (traced): this wrapper came from PR #2751 (MAEB: Seamlessm4t
+        # Model V2), which validated it on exactly one task -- BeijingOpera,
+        # whose clips average 1.7 s and top out at 8.9 s. 5 s covered that
+        # dataset comfortably, so nothing flagged it, and it was never revisited
+        # when MAEB grew long-audio tasks (SoundDescs ~112 s, Covers80/SHS100K
+        # ~251 s, Beehive 600 s). It is a fit to one short-clip dataset, not a
+        # model limit.
+        #
+        # The model itself declares no duration limit: the v2 speech encoder uses
+        # relative position embeddings ("only considers distance between sequence
+        # elements rather than absolute positions") plus chunked attention
+        # (`speech_encoder_chunk_size: 20000`), so it is variable-length;
+        # `max_position_embeddings: 4096` is the text side. The only number
+        # published anywhere is Meta's own demo app, which caps input at 10 s:
+        #   MAX_INPUT_AUDIO_LENGTH = 10  # in seconds
+        # -- and that is a demo UX constraint, not a model bound.
+        # https://github.com/facebookresearch/seamless_communication/blob/main/demo/expressive/app.py
+        # https://huggingface.co/docs/transformers/model_doc/seamless_m4t_v2
         max_audio_length_seconds: float = 5.0,
         **kwargs: Any,
     ):

@@ -186,6 +186,13 @@ _COSMOS_COMMON = dict(
         "Kinetics700VAZeroShot",
     },
     citation=None,
+    # Native frame count, fixed by the architecture -- Cosmos-Embed1 declares
+    # `num_video_frames: 8` in its config and the model card states it uses
+    # "8 linearly spaced frames per clip".
+    # Unlike the variable-length MLLMs, this value must not be changed for cost:
+    # the model was trained at this clip length and sampling fewer (or more)
+    # frames puts it out of distribution.
+    # https://huggingface.co/nvidia/Cosmos-Embed1-224p/blob/main/config.json
     loader_kwargs=dict(num_frames=8),
     extra_requirements_groups=["cosmos-embed1"],
 )

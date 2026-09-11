@@ -164,6 +164,11 @@ class ViCLIPWrapper(AbsEncoder):
 
 _VICLIP_COMMON = dict(
     loader=ViCLIPWrapper,
+    # Native frame count, fixed by the architecture -- ViCLIP is trained on 8-frame clips.
+    # Unlike the variable-length MLLMs, this value must not be changed for cost:
+    # the model was trained at this clip length and sampling fewer (or more)
+    # frames puts it out of distribution.
+    # https://github.com/OpenGVLab/InternVideo
     loader_kwargs=dict(num_frames=8),
     model_type=["dense"],
     languages=["eng-Latn"],

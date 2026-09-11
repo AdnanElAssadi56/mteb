@@ -124,6 +124,12 @@ _VJEPA2_PRETRAIN = {
 
 vjepa2_vitl_fpc64_256 = ModelMeta(
     loader=VJepaV2Wrapper,
+    # Native, per-checkpoint: V-JEPA 2 encodes its clip length in the checkpoint
+    # name and config (`facebook/vjepa2-vitl-fpc64-256` -> `frames_per_clip: 64`).
+    # Different checkpoints in this file legitimately differ (64 / 32 / 16) --
+    # that is the model's training config, not an inconsistency, and forcing a
+    # single benchmark-wide budget here would evaluate them out of distribution.
+    # https://huggingface.co/facebook/vjepa2-vitl-fpc64-256/blob/main/config.json
     loader_kwargs=dict(num_frames=64),
     name="facebook/vjepa2-vitl-fpc64-256",
     revision="b3c1679b7c34d3255ef3547f27c7b226aefab26f",

@@ -420,6 +420,9 @@ class RandomEncoderBaseline:
         embed_dim: int | None = None,
         fps: float | None = None,
         max_frames: int | None = None,
+        # Arbitrary by design: the random baseline never encodes the media, so
+        # the frame count only needs to be a valid number (see the sampling-rate
+        # note above). It is not a claim about any model's native budget.
         num_frames: int | None = 10,
         **kwargs: Any,
     ) -> None:
@@ -571,6 +574,9 @@ class RandomSparseEncoderBaseline:
         n_nonzero: int | None = None,
         fps: float | None = None,
         max_frames: int | None = None,
+        # Arbitrary by design: the random baseline never encodes the media, so
+        # the frame count only needs to be a valid number (see the sampling-rate
+        # note above). It is not a claim about any model's native budget.
         num_frames: int | None = 10,
         **kwargs: Any,
     ) -> None:
@@ -667,6 +673,9 @@ class RandomColBERTBaseline:
         num_tokens: int | None = None,
         fps: float | None = None,
         max_frames: int | None = None,
+        # Arbitrary by design: the random baseline never encodes the media, so
+        # the frame count only needs to be a valid number (see the sampling-rate
+        # note above). It is not a claim about any model's native budget.
         num_frames: int | None = 10,
         **kwargs: Any,
     ) -> None:

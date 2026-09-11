@@ -170,6 +170,12 @@ xclip_base_patch32 = ModelMeta(
     max_tokens=77,
     embed_dim=512,
     reference="https://huggingface.co/microsoft/xclip-base-patch32",
+    # Native frame count, fixed by the architecture -- X-CLIP checkpoints declare `num_frames: 8`
+    # in config.json (trained on Kinetics at 8 frames).
+    # Unlike the variable-length MLLMs, this value must not be changed for cost:
+    # the model was trained at this clip length and sampling fewer (or more)
+    # frames puts it out of distribution.
+    # https://huggingface.co/microsoft/xclip-base-patch32/blob/main/config.json
     loader_kwargs=dict(num_frames=8),
     **_XCLIP_COMMON,
 )

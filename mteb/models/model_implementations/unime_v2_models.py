@@ -63,6 +63,17 @@ class UniMEV2Wrapper(AbsEncoder):
         model_name: str,
         revision: str | None = None,
         device: str | None = None,
+        # Frame budget: fps=2 is the vendor default -- Qwen ships `FPS = 2.0`
+        # (with FPS_MIN_FRAMES=4, FPS_MAX_FRAMES=768) in qwen-vl-utils /
+        # qwen-omni-utils, which is this family's own preprocessing path.
+        # `max_frames` is an mteb-side cost cap well below Qwen's 768: video
+        # encoding dominates benchmark runtime, and frames are sampled uniformly
+        # across the whole clip, so the cap reduces temporal resolution rather
+        # than coverage. Note the field has two conventions -- MVEB uses
+        # fps=2/max 64 for variable-length models (arXiv:2606.14958) while
+        # UVRB and MMEB-V3 force a uniform 8 frames on every model
+        # (arXiv:2510.27571) -- so this is a defensible choice, not the only one.
+        # https://github.com/QwenLM/Qwen2.5-Omni/blob/main/qwen-omni-utils/src/qwen_omni_utils/v2_5/vision_process.py
         fps: float | None = 2.0,
         max_frames: int | None = 64,
         num_frames: int | None = None,
