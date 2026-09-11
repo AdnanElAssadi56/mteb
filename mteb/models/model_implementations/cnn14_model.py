@@ -22,6 +22,8 @@ class CNN14Wrapper(AbsEncoder):
         self,
         model_name: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
+        # 30 s is ours; PANNs trains on 10 s clips (arXiv:1912.10211) but lowering
+        # a cap removes signal and is untested here
         max_audio_length_s: float = 30.0,
         **kwargs: Any,
     ):
@@ -38,8 +40,9 @@ class CNN14Wrapper(AbsEncoder):
             run_opts={"device": device},
         )
 
-        # SpeechBrain uses a 16kHz sampling rate for audio
-        self.sampling_rate = 16_000
+        # 44.1 kHz per the checkpoint's hyperparams.yaml; at 16 kHz it misreads
+        # its own example_dogbark.wav ("hand_saw")
+        self.sampling_rate = 44_100
 
     def _pad_audio_batch(self, batch: list[torch.Tensor]) -> torch.Tensor:  # noqa: PLR6301
         max_len = max(w.shape[0] for w in batch)
