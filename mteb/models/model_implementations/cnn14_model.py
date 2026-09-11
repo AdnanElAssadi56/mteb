@@ -22,7 +22,11 @@ class CNN14Wrapper(AbsEncoder):
         self,
         model_name: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        max_audio_length_s: float = 30.0,
+        # CNN14 is trained on 10 s clips: the PANNs recipe pads/crops AudioSet to
+        # 10 s (arXiv:1912.10211 §IV-A), and this checkpoint is SimCLR-pretrained on
+        # VGGSound (10 s clips) then fine-tuned on ESC-50 (5 s). 30 s was an
+        # mteb-side default with no basis in the model.
+        max_audio_length_s: float = 10.0,
         **kwargs: Any,
     ):
         self.model_name = model_name
@@ -38,8 +42,12 @@ class CNN14Wrapper(AbsEncoder):
             run_opts={"device": device},
         )
 
-        # SpeechBrain uses a 16kHz sampling rate for audio
-        self.sampling_rate = 16_000
+        # The CNN14 checkpoint declares `sample_rate: 44100` in its SpeechBrain
+        # hyperparams.yaml, and its mel filterbank (n_fft=1024, hop 11.61ms,
+        # win 23.22ms) is derived from that rate. Feeding 16 kHz audio shifts
+        # every mel bin to the wrong frequency, so the rate must match.
+        # https://huggingface.co/speechbrain/cnn14-esc50/blob/main/hyperparams.yaml
+        self.sampling_rate = 44_100
 
     def _pad_audio_batch(self, batch: list[torch.Tensor]) -> torch.Tensor:  # noqa: PLR6301
         max_len = max(w.shape[0] for w in batch)

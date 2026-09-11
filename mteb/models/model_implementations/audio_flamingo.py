@@ -25,7 +25,13 @@ class AudioFlamingoWrapper(AbsEncoder):
         model_name: str,
         revision: str | None = None,
         device: str | None = None,
-        max_audio_length_seconds: float = 30.0,
+        # AF3 "processes audio in 30-second windows with a 10-minute total cap
+        # per sample" and advertises "Max Audio Length: 10 Minutes" -- the 30 s
+        # window is internal to AF-Whisper, not the input limit. Capping the
+        # input at 30 s discarded the long-audio capability the model is built
+        # for. arXiv:2507.08128
+        # https://huggingface.co/nvidia/audio-flamingo-3-hf
+        max_audio_length_seconds: float = 600.0,
         torch_dtype: torch.dtype = torch.bfloat16,
         device_map: str | dict | None = None,
         **kwargs: Any,

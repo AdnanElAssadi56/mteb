@@ -23,7 +23,10 @@ class MuQMuLanWrapper(AbsEncoder):
         self,
         model_name: str = "OpenMuQ/MuQ-MuLan-large",
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        max_audio_length_s: float = 30.0,
+        # MuQ-MuLan consumes 10 s of audio: 128-dim mel frames at 25 Hz from
+        # 24 kHz input, "the length of the input audio is 10 seconds".
+        # arXiv:2501.01108 (MuQ / MuQ-MuLan)
+        max_audio_length_s: float = 10.0,
         **kwargs: Any,
     ):
         from muq import MuQMuLan

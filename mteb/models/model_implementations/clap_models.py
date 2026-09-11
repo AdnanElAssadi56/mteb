@@ -57,11 +57,19 @@ class ClapZeroShotWrapper(AbsEncoder):
             disable=not show_progress_bar,
         ):
             audio_array = [audio["array"] for audio in batch["audio"]]
+            # Do not pass `padding=`/`truncation=` here. ClapFeatureExtractor
+            # resolves them as `padding if padding else self.padding`, so a bare
+            # `padding=True` replaces the checkpoint's declared "repeatpad" and
+            # clips shorter than 10 s get zero-padded instead of repeated -- which
+            # is off-distribution for CLAP. Leaving them unset keeps the
+            # checkpoint's own "repeatpad" + "fusion" (3 crops + a downsampled
+            # global view, the mechanism LAION added precisely so that audio
+            # longer than 10 s is not truncated; arXiv:2211.06687 §2.2).
+            # https://github.com/huggingface/transformers/blob/main/src/transformers/models/clap/feature_extraction_clap.py
             features = self.processor(
                 audio=audio_array,
                 sampling_rate=self.sampling_rate,
                 return_tensors="pt",
-                padding=True,
             )
             features = {k: v.to(self.device) for k, v in features.items()}
 

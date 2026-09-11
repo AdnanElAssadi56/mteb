@@ -22,7 +22,12 @@ class OmniEmbedNemotronWrapper(SentenceTransformerEncoderWrapper):
         fps: float | None = 2.0,
         max_frames: int | None = 64,
         num_frames: int | None = None,
-        max_audio_length: int = 2_048_000,
+        # The checkpoint's feature extractor declares `chunk_length: 300` /
+        # `n_samples: 4800000` at 16 kHz, i.e. 300 s of audio. The previous
+        # 2_048_000 samples (128 s) truncated well inside what the model
+        # natively accepts.
+        # https://huggingface.co/nvidia/omni-embed-nemotron-3b/blob/main/preprocessor_config.json
+        max_audio_length: int = 4_800_000,
         **kwargs: Any,
     ) -> None:
         super().__init__(
