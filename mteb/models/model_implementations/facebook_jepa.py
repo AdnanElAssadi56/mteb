@@ -124,6 +124,8 @@ _VJEPA2_PRETRAIN = {
 
 vjepa2_vitl_fpc64_256 = ModelMeta(
     loader=VJepaV2Wrapper,
+    # per-checkpoint native: V-JEPA 2 declares frames_per_clip (64/32/16 here);
+    # these legitimately differ, do not unify them
     loader_kwargs=dict(num_frames=64),
     name="facebook/vjepa2-vitl-fpc64-256",
     revision="b3c1679b7c34d3255ef3547f27c7b226aefab26f",

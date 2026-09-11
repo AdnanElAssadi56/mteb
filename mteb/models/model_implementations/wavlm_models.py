@@ -24,6 +24,7 @@ class WavlmWrapper(AbsEncoder):
         model_name: str,
         revision: str | None = None,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
+        # 30 s is an mteb memory guard, not native: variable-length encoder
         max_audio_length_seconds: float = 30.0,
         **kwargs: Any,
     ):

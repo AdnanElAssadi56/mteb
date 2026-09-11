@@ -26,6 +26,7 @@ class Wav2ClipZeroShotWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
+        # 30 s is ours; Wav2CLIP saw 10 s VGGSound clips (arXiv:2110.11499), untested
         max_audio_length_s: float = 30.0,
         **kwargs: Any,
     ):

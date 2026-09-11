@@ -26,6 +26,7 @@ class Qwen3VoiceEmbeddingWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
+        # rate read from the feature extractor (24 kHz); 30 s is ours, none declared
         max_audio_length_seconds: float = 30.0,
         **kwargs: Any,
     ):

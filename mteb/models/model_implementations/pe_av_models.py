@@ -32,10 +32,13 @@ class PEAudioVisualWrapper(AbsEncoder):
         self,
         model_name: str = "facebook/pe-av-large",
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
+        # fps=2 is Qwen's shipped default (qwen-vl-utils FPS=2.0, max 768 frames);
+        # max_frames is an mteb cost cap, and frames are sampled across the whole clip
         fps: float | None = 2.0,
         max_frames: int | None = 64,
         num_frames: int | None = None,
-        max_samples: int | None = 30 * 48000,  # 30s * sampling rate
+        # 48 kHz from the checkpoint; 30 s is ours (encoder has ~400 s of positions)
+        max_samples: int | None = 30 * 48000,
         **kwargs: Any,
     ):
         from transformers import PeAudioVideoModel, PeAudioVideoProcessor

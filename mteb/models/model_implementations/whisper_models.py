@@ -24,6 +24,7 @@ class WhisperAudioWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
+        # 30 s native: extractor declares chunk_length=30 / n_samples=480000
         max_audio_length_seconds: float = 30.0,
         **kwargs: Any,
     ):

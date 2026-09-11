@@ -186,6 +186,7 @@ _COSMOS_COMMON = dict(
         "Kinetics700VAZeroShot",
     },
     citation=None,
+    # 8 frames native: config declares num_video_frames=8
     loader_kwargs=dict(num_frames=8),
     extra_requirements_groups=["cosmos-embed1"],
 )

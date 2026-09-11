@@ -24,6 +24,8 @@ class SeamlessM4TWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
+        # UNVERIFIED: from #2751, fit to BeijingOpera (1.7 s avg clips); the model
+        # declares no limit and Meta's demo caps at 10 s
         max_audio_length_seconds: float = 5.0,
         **kwargs: Any,
     ):

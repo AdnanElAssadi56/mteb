@@ -28,6 +28,7 @@ class EncodecWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
+        # 30 s is an mteb memory guard, not native: variable-length encoder
         max_audio_length_seconds: float = 30.0,
         **kwargs: Any,
     ):
@@ -41,7 +42,7 @@ class EncodecWrapper(AbsEncoder):
         self.model.eval()
 
         self.processor = AutoProcessor.from_pretrained(model_name)
-        self.sampling_rate = self.processor.sampling_rate  # 24000 Hz typically
+        self.sampling_rate = self.processor.sampling_rate  # from checkpoint (24 kHz)
 
     def get_audio_embeddings(
         self,

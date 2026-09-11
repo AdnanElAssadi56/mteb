@@ -164,6 +164,7 @@ class ViCLIPWrapper(AbsEncoder):
 
 _VICLIP_COMMON = dict(
     loader=ViCLIPWrapper,
+    # 8 frames native (ViCLIP trains on 8-frame clips)
     loader_kwargs=dict(num_frames=8),
     model_type=["dense"],
     languages=["eng-Latn"],

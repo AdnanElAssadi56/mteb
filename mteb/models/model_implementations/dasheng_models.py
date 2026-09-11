@@ -55,6 +55,7 @@ class DashengAudioWrapper(AbsEncoder):
         self.feature_extractor = AutoFeatureExtractor.from_pretrained(
             model_name, revision=revision, trust_remote_code=True
         )
+        # uncapped: X-ARES wants variable-length inference to 10 min (arXiv:2505.16369)
         self.sampling_rate = self.feature_extractor.sampling_rate
 
     def encode(

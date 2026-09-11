@@ -28,6 +28,7 @@ class SpeechT5Audio(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
+        # 30 s is an mteb memory guard, not native: variable-length encoder
         max_audio_length_s: float = 30.0,
         **kwargs: Any,
     ):
@@ -224,6 +225,7 @@ class SpeechT2Multimodal(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
+        # 30 s is an mteb memory guard, not native: variable-length encoder
         max_audio_length_s: float = 30.0,
         **kwargs: Any,
     ):

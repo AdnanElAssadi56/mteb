@@ -21,6 +21,7 @@ if TYPE_CHECKING:
 
 class HeARS11AudioWrapper(AbsEncoder):
     sampling_rate = 16_000
+    # 2 s native: config declares clip_seconds=2.0; longer audio is centre-cropped
     clip_samples = 32_000
 
     def __init__(

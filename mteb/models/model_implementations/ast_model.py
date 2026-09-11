@@ -37,6 +37,7 @@ class ASTWrapper(AbsEncoder):
             self.device
         )
         self.model.eval()
+        # from the checkpoint: 16 kHz, and its own max_length=1024 frames = 10.24 s
         self.sampling_rate = self.feature_extractor.sampling_rate
 
     @torch.no_grad()

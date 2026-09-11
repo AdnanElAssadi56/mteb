@@ -29,6 +29,7 @@ class MSClapWrapper(AbsEncoder):
         self,
         model_name: str = "microsoft/msclap-2023",
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
+        # unused: msclap crops to its own config duration (7 s) with a random window
         max_audio_length_s: float = 30.0,
         **kwargs: Any,
     ):
@@ -36,6 +37,8 @@ class MSClapWrapper(AbsEncoder):
 
         self.model_name = model_name
         self.device = device
+        # 48 kHz is wrong (msclap config declares 44100); fixed upstream in #5404,
+        # not duplicated here
         self.sampling_rate = 48000
         self.max_audio_length_s = max_audio_length_s
 

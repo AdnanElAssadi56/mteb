@@ -25,9 +25,12 @@ class LCOEmbedding(AbsEncoder):
         model_name: str,
         revision: str | None = None,
         device: str | None = None,
+        # fps=2 is Qwen's shipped default (qwen-vl-utils FPS=2.0, max 768 frames);
+        # max_frames is an mteb cost cap, and frames are sampled across the whole clip
         fps: float | None = 2.0,
         max_frames: int | None = 64,
         num_frames: int | None = None,
+        # uncapped: Qwen2.5-Omni's extractor truncates at its own 300 s
         max_audio_length: int | None = None,
         **kwargs: Any,
     ):

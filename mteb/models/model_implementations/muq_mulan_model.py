@@ -23,6 +23,7 @@ class MuQMuLanWrapper(AbsEncoder):
         self,
         model_name: str = "OpenMuQ/MuQ-MuLan-large",
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
+        # 30 s is ours; MuQ-MuLan consumes 10 s (arXiv:2501.01108), lowering untested
         max_audio_length_s: float = 30.0,
         **kwargs: Any,
     ):
