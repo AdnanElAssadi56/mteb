@@ -45,21 +45,32 @@ class CNN14Wrapper(AbsEncoder):
             run_opts={"device": device},
         )
 
-        # 16 kHz is correct here, despite the checkpoint's hyperparams.yaml
-        # declaring `sample_rate: 44100`. That field is the frontend's ms->samples
-        # conversion constant (hop 11.61 ms, win 23.22 ms, n_fft 1024), not a
-        # statement about what audio to feed; the encoder was SimCLR-pretrained on
-        # VGGSound and fine-tuned on ESC-50, both commonly distributed at 16 kHz,
-        # so the model learned features from 16 kHz audio through this
-        # 44.1 kHz-configured frontend.
+        # 44.1 kHz, matching the checkpoint. Evidence, including the parts that
+        # point the other way, because this one is genuinely mixed:
         #
-        # Changing it to 44100 was tried and measurably hurts, on both tasks
-        # tested (CNN14, CPU, mteb 2.20.12):
-        #   BeijingOpera          16 kHz 0.8088  vs  44.1 kHz 0.7458
-        #   GunshotTriangulation  16 kHz 0.8320  vs  44.1 kHz 0.5333
-        # The published result (0.8386 at mteb 2.4.2) is consistent with 16 kHz.
-        # Do not "correct" this to match the yaml without re-running that A/B.
-        self.sampling_rate = 16_000
+        # For 44.1 kHz (decisive):
+        #  - hyperparams.yaml declares `sample_rate: 44100`, and the mel frontend
+        #    (n_fft 1024, hop 11.61 ms, win 23.22 ms) is derived from it.
+        #  - The authors' own `example_dogbark.wav` is 44.1 kHz.
+        #  - Running the authors' own sanity check, the model's classifier head
+        #    predicts "dog" when fed 44.1 kHz and "hand_saw" when fed the same
+        #    audio resampled to 16 kHz. Wrong rate => wrong prediction.
+        #
+        # Against (why this looks tempting to revert): mteb's audio classification
+        # does not use that head -- it trains a fresh probe on embeddings, and
+        # mangled-but-consistent features can still probe well. Measured on CPU at
+        # mteb 2.20.12 (accuracy, 16 kHz vs 44.1 kHz):
+        #    GunshotTriangulation (n=88)   0.8320  vs  0.5333   <- favours 16 kHz
+        #    BeijingOpera         (n=236)  0.8088  vs  0.7458   <- favours 16 kHz
+        #    FSDD                 (n=300)  0.1523  vs  0.2900   <- favours 44.1 kHz
+        #    VoxPopuliGenderID    (n=500)  0.6920  vs  0.7360   <- favours 44.1 kHz
+        # The two tasks preferring 16 kHz are the two smallest. We follow the rate
+        # the model actually works at rather than the one that probes higher on
+        # small tasks.
+        #
+        # NOTE: published CNN14 results (e.g. BeijingOpera 0.8386 at mteb 2.4.2)
+        # were produced at 16 kHz and are NOT comparable to runs after this change.
+        self.sampling_rate = 44_100
 
     def _pad_audio_batch(self, batch: list[torch.Tensor]) -> torch.Tensor:  # noqa: PLR6301
         max_len = max(w.shape[0] for w in batch)
