@@ -37,6 +37,13 @@ class ASTWrapper(AbsEncoder):
             self.device
         )
         self.model.eval()
+        # Read from the checkpoint rather than hardcoded: AST declares
+        # `sampling_rate: 16000`, `num_mel_bins: 128` and `max_length: 1024`
+        # frames. At the paper's 10 ms hop that is 10.24 s, matching the 10 s
+        # AudioSet clips it was trained on ("a 128x100t spectrogram",
+        # arXiv:2104.01778 S3.1). We deliberately do not pass `max_length` to the
+        # feature extractor, so its own 1024-frame default applies.
+        # https://huggingface.co/MIT/ast-finetuned-audioset-10-10-0.4593/blob/main/preprocessor_config.json
         self.sampling_rate = self.feature_extractor.sampling_rate
 
     @torch.no_grad()

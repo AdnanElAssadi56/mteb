@@ -25,6 +25,10 @@ class Qwen2AudioWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
+        # Native, exact: Qwen2-Audio declares `chunk_length: 30` / `n_samples:
+        # 480000` at 16 kHz (a Whisper-lineage audio tower), so 30 s is the
+        # window the encoder was trained for, not an mteb-side cap.
+        # https://huggingface.co/Qwen/Qwen2-Audio-7B/blob/main/preprocessor_config.json
         max_audio_length_seconds: float = 30.0,
         **kwargs: Any,
     ):

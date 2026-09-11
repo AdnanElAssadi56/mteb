@@ -24,6 +24,11 @@ class WhisperAudioWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
+        # Native, exact: Whisper's feature extractor declares `chunk_length: 30`
+        # / `n_samples: 480000` at 16 kHz -- the encoder consumes a fixed 30 s
+        # mel window and nothing longer. Do not raise this; longer audio must be
+        # windowed, not fed in one pass.
+        # https://huggingface.co/openai/whisper-large-v3/blob/main/preprocessor_config.json
         max_audio_length_seconds: float = 30.0,
         **kwargs: Any,
     ):

@@ -55,6 +55,14 @@ class DashengAudioWrapper(AbsEncoder):
         self.feature_extractor = AutoFeatureExtractor.from_pretrained(
             model_name, revision=revision, trust_remote_code=True
         )
+        # Read from the checkpoint (`sampling_rate: 16000`). Deliberately left
+        # uncapped: Dasheng is a ViT over mel patches and accepts variable-length
+        # input -- X-ARES, the benchmark it was selected on, requires encoders to
+        # "support variable length inference up to 10 minutes"
+        # (arXiv:2505.16369). Its masked-autoencoder pretraining used
+        # `target_length: 1008` mel frames (~10 s, arXiv:2406.06992), but that is
+        # the training crop, not an inference limit.
+        # https://huggingface.co/mispeech/dasheng-base/blob/main/config.json
         self.sampling_rate = self.feature_extractor.sampling_rate
 
     def encode(

@@ -35,7 +35,14 @@ class PEAudioVisualWrapper(AbsEncoder):
         fps: float | None = 2.0,
         max_frames: int | None = 64,
         num_frames: int | None = None,
-        max_samples: int | None = 30 * 48000,  # 30s * sampling rate
+        # 48 kHz is the checkpoint's declared rate (`sampling_rate: 48000` in
+        # preprocessor_config, and its DAC codec config likewise); the rate is
+        # read from the feature extractor below rather than assumed. The 30 s cap
+        # is mteb-side: the audio encoder declares `max_position_embeddings:
+        # 10000` at a DAC hop of 1920 samples (=25 frames/s), i.e. ~400 s of
+        # capacity, so 30 s is our choice and is well inside what it supports.
+        # https://huggingface.co/facebook/pe-av-base/blob/main/config.json
+        max_samples: int | None = 30 * 48000,
         **kwargs: Any,
     ):
         from transformers import PeAudioVideoModel, PeAudioVideoProcessor

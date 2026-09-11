@@ -55,6 +55,11 @@ MULTILINGUAL_EVALUATED_LANGUAGES = [
 
 GEMINI_VIDEO_FPS = 1.0
 GEMINI_MAX_VIDEO_FRAMES = 32
+# mteb-side COST cap, not an API limit. The Gemini API accepts up to
+# "9.5 hours of audio per prompt" and bills "32 tokens per second of audio",
+# so an uncapped long-audio task would be extremely expensive (180 s = 5,760
+# tokens per clip; 9.5 h would be ~1.1M). Raise deliberately, with cost in mind.
+# https://ai.google.dev/gemini-api/docs/audio
 GEMINI_MAX_AUDIO_SECONDS = 180
 
 GEMINI_EMBEDDING_CITATION = """@misc{lee2025geminiembeddinggeneralizableembeddings,

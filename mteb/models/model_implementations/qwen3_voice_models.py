@@ -26,6 +26,11 @@ class Qwen3VoiceEmbeddingWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
+        # mteb-side cap. The checkpoint declares `sample_rate: 24000` in its
+        # config and the rate is read from the feature extractor below rather
+        # than hardcoded; no input-length limit is declared, so 30 s is our
+        # choice, not the model's.
+        # https://huggingface.co/marksverdhei/Qwen3-Voice-Embedding-12Hz-1.7B/blob/main/config.json
         max_audio_length_seconds: float = 30.0,
         **kwargs: Any,
     ):

@@ -28,6 +28,11 @@ class SpeechT5Audio(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
+        # mteb-side memory guard, not a native limit: SpeechT5's feature
+        # extractor declares `sampling_rate: 16000` / `num_mel_bins: 80` and no
+        # length limit; it is a variable-length encoder-decoder trained on
+        # LibriSpeech utterances.
+        # https://huggingface.co/microsoft/speecht5_asr/blob/main/preprocessor_config.json
         max_audio_length_s: float = 30.0,
         **kwargs: Any,
     ):
@@ -224,6 +229,11 @@ class SpeechT2Multimodal(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
+        # mteb-side memory guard, not a native limit: SpeechT5's feature
+        # extractor declares `sampling_rate: 16000` / `num_mel_bins: 80` and no
+        # length limit; it is a variable-length encoder-decoder trained on
+        # LibriSpeech utterances.
+        # https://huggingface.co/microsoft/speecht5_asr/blob/main/preprocessor_config.json
         max_audio_length_s: float = 30.0,
         **kwargs: Any,
     ):

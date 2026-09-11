@@ -20,6 +20,10 @@ if TYPE_CHECKING:
 
 
 # LanguageBind expects audio sampled at 16 kHz (its audio mel-spectrogram pipeline).
+# Declared by the checkpoint: `vision_config.audio_sample_rate: 16000`
+# (with `num_mel_bins: 112`). Audio length is left uncapped (`max_samples=None`)
+# because LanguageBind declares no input-length limit.
+# https://huggingface.co/LanguageBind/LanguageBind_Audio_FT/blob/main/config.json
 _LANGUAGE_BIND_AUDIO_SR = 16000
 
 _LANGUAGEBIND_SHIM_APPLIED: list[bool] = []

@@ -37,6 +37,11 @@ class EBindWrapper(AbsEncoder):
         device: str | None = None,
         fps: float | None = None,
         max_frames: int | None = None,
+        # eBind's declared native config: 8 uniformly sampled video frames, and
+        # audio resampled to 16 kHz (see `target_sampling_rate=16_000` below).
+        # No audio length cap is applied -- eBind declares none. Short clips are
+        # padded in this wrapper because its STFT window needs a minimum length.
+        # https://huggingface.co/encord-team/ebind-full
         num_frames: int | None = 8,
         **kwargs: Any,
     ) -> None:

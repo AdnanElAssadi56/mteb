@@ -336,6 +336,16 @@ class ColQwen2_5OmniWrapper(ColPaliEngineWrapper):  # noqa: N801
         device: str | None = None,
         max_frames: int | None = 64,
         num_frames: int | None = None,
+        # SHARED BACKBONE, INCONSISTENT CAPS -- see note. This model's audio
+        # tower is the Qwen2.5-Omni (Whisper-lineage) encoder, whose feature
+        # pipeline maxes out at 1500 log-mel frames = 30 s, and whose docs advise
+        # keeping clips "under 30 seconds". mteb currently gives the five
+        # wrappers built on that same tower three different limits:
+        #   qwen_omni_lm 300 s | bidirlm 30 s | jina 30 s | lco None | colqwen None
+        # so scores on long-audio tasks partly reflect the wrapper, not the model.
+        # Left as-is pending a check of whether the processor actually consumes
+        # >30 s or silently truncates; do not "fix" one of these in isolation.
+        # https://huggingface.co/docs/transformers/model_doc/qwen2_5_omni
         max_audio_length: int | None = None,
         **kwargs: Any,
     ):

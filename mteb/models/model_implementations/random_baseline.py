@@ -176,6 +176,9 @@ def _attach_modality_collator(
         requires_audio_dependencies()
         requires_image_dependencies()
         inputs.collate_fn = VideoCollator(
+            # Arbitrary by design: this is the random-embedding baseline, so the
+            # audio is never actually encoded. 16 kHz is the most common rate in
+            # the benchmark and is used only to give the collator a valid target.
             target_sampling_rate=16000,
             fps=fps,
             max_frames=max_frames,
@@ -521,6 +524,7 @@ class RandomCrossEncoderBaseline:
         has_audio = "audio" in inputs1.dataset.features
         if has_video or has_audio:
             collator = VideoCollator(
+                # See note above: random baseline, rate is immaterial.
                 target_sampling_rate=16000,
                 fps=2.0,
             )

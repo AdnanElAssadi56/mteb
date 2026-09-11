@@ -24,6 +24,14 @@ class SeamlessM4TWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
+        # UNVERIFIED -- no source supports this value. The SeamlessM4T v2 model
+        # card states only that input "must be a 16 kHz waveform array" and
+        # declares no duration limit; the w2v-BERT 2.0 speech encoder is
+        # variable-length. 5 s was introduced with this file without a stated
+        # rationale and truncates most speech utterances (Fleurs/LibriSpeech
+        # average ~12 s), so it likely understates the model. Left unchanged
+        # pending a decision rather than swapped for another arbitrary number.
+        # https://huggingface.co/facebook/seamless-m4t-v2-large
         max_audio_length_seconds: float = 5.0,
         **kwargs: Any,
     ):

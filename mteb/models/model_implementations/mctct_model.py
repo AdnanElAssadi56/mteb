@@ -87,6 +87,9 @@ class MCTCTWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
+        # mteb-side memory guard, not a native limit: M-CTC-T is a
+        # variable-length CTC speech recogniser trained on CommonVoice/VoxPopuli
+        # utterances, whose feature extractor declares only a sampling rate.
         max_audio_length_seconds: float = 30.0,
         **kwargs: Any,
     ):

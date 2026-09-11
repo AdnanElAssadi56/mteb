@@ -28,6 +28,9 @@ class EncodecWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
+        # mteb-side memory guard, not a model limit: EnCodec is a fully
+        # convolutional streaming codec with no fixed input length. 30 s bounds
+        # activation memory; raising it is safe for the model but costs memory.
         max_audio_length_seconds: float = 30.0,
         **kwargs: Any,
     ):
@@ -41,7 +44,11 @@ class EncodecWrapper(AbsEncoder):
         self.model.eval()
 
         self.processor = AutoProcessor.from_pretrained(model_name)
-        self.sampling_rate = self.processor.sampling_rate  # 24000 Hz typically
+        # Read from the checkpoint: facebook/encodec_24khz declares
+        # `sampling_rate: 24000` (the 48 kHz variant declares 48000), so this
+        # follows whichever checkpoint is loaded instead of assuming a rate.
+        # https://huggingface.co/facebook/encodec_24khz/blob/main/preprocessor_config.json
+        self.sampling_rate = self.processor.sampling_rate
 
     def get_audio_embeddings(
         self,

@@ -32,6 +32,10 @@ def yamnet_loader(*args: Any, **kwargs: Any) -> EncoderProtocol:
         def __init__(
             self,
             device: str = "cuda" if torch.cuda.is_available() else "cpu",
+            # mteb-side cap only. Because the model is patch-based and the
+            # patches are mean-pooled, raising this extends coverage linearly at
+            # linear cost -- there is no architectural reason for 30 s. A 600 s
+            # clip is currently covered to 5%.
             max_audio_length_seconds: float = 30.0,
             **kwargs: Any,
         ):
@@ -43,6 +47,11 @@ def yamnet_loader(*args: Any, **kwargs: Any) -> EncoderProtocol:
             self.converter = WaveformToInput()
             self.sampling_rate = 16000  # YAMNet requires 16kHz audio
             self.embed_dim = 1024  # YAMNet embedding dimension
+            # Native, exact: YAMNet consumes fixed 0.96 s log-mel patches
+            # (15,360 samples at 16 kHz) and emits one embedding per patch;
+            # `get_audio_embeddings` mean-pools them, which is the reference
+            # aggregation for this family. arXiv:1609.09430 S2 (VGGish/YAMNet
+            # share the AudioSet frontend: 64 mel bands, 25 ms window, 10 ms hop).
             self.min_samples = int(0.96 * self.sampling_rate)  # 15,360 samples
 
         def _resample_audio(

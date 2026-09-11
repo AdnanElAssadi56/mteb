@@ -24,6 +24,11 @@ class WavlmWrapper(AbsEncoder):
         model_name: str,
         revision: str | None = None,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
+        # mteb-side memory guard, NOT a native limit. WavLM is a
+        # variable-length conv+transformer encoder trained on LibriSpeech/GigaSpeech/VoxPopuli utterances; its
+        # feature extractor declares only `sampling_rate: 16000` and no length.
+        # 30 s bounds the quadratic self-attention cost -- utterance-level speech data is far
+        # shorter than 30 s, so this rarely binds in practice.
         max_audio_length_seconds: float = 30.0,
         **kwargs: Any,
     ):

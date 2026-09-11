@@ -84,6 +84,12 @@ class Wav2Vec2AudioWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
+        # mteb-side memory guard, NOT a native limit. wav2vec 2.0 is a
+        # variable-length conv+transformer encoder trained on LibriSpeech/CommonVoice utterances; its
+        # feature extractor declares only `sampling_rate: 16000` and no length.
+        # 30 s bounds the quadratic self-attention cost -- for reference, pretraining cropped
+        # batches to 15.6 s (Base) and 20 s (Large), so 30 s already exceeds the
+        # longest span the model saw in training (arXiv:2006.11477 S4.2).
         max_audio_length_seconds: float = 30.0,
         **kwargs: Any,
     ):

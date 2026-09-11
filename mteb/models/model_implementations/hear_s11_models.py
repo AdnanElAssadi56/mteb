@@ -21,6 +21,10 @@ if TYPE_CHECKING:
 
 class HeARS11AudioWrapper(AbsEncoder):
     sampling_rate = 16_000
+    # Native, exact: HeAR-s1.1 declares `clip_seconds: 2.0`,
+    # `num_audio_samples: 32000` and `sample_rate: 16000`. Clips longer than 2 s
+    # are centre-cropped below (deterministic); shorter ones are zero-padded.
+    # https://huggingface.co/matthewagi/HeAR-s1.1/blob/main/config.json
     clip_samples = 32_000
 
     def __init__(

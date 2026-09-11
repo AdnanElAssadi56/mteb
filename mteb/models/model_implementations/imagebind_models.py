@@ -99,6 +99,15 @@ class ImageBindWrapper(AbsEncoder):
         from torchvision import transforms
 
         sample_rate = 16_000
+        # Matches the reference implementation exactly: ImageBind's own
+        # `load_and_transform_audio_data` defaults are clip_duration=2,
+        # clips_per_video=3, num_mel_bins=128, target_length=204,
+        # sample_rate=16000, mean=-4.268, std=9.138 -- all mirrored here.
+        # Note this covers only 3 x 2 s = 6 s of any clip regardless of its
+        # length; that is upstream ImageBind behaviour (arXiv:2305.05665 S3
+        # describes covering the full length, but the shipped default does not),
+        # so it is kept for fidelity rather than "fixed".
+        # https://github.com/facebookresearch/ImageBind/blob/main/imagebind/data.py
         clip_sampler = ConstantClipsPerVideoSampler(clip_duration=2, clips_per_video=3)
         normalize = transforms.Normalize(mean=-4.268, std=9.138)
 
