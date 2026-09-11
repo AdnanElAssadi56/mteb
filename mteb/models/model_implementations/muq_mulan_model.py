@@ -23,10 +23,14 @@ class MuQMuLanWrapper(AbsEncoder):
         self,
         model_name: str = "OpenMuQ/MuQ-MuLan-large",
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # MuQ-MuLan consumes 10 s of audio: 128-dim mel frames at 25 Hz from
-        # 24 kHz input, "the length of the input audio is 10 seconds".
-        # arXiv:2501.01108 (MuQ / MuQ-MuLan)
-        max_audio_length_s: float = 10.0,
+        # NOTE: MuQ-MuLan is trained on 10-second clips (arXiv:2501.01108: input audio length is 10 s), so a
+        # 10 s cap looks "more native" than 30 s -- but lowering a cap
+        # removes signal, and that reasoning has already failed once in this
+        # file's history: setting CNN14's rate to the value its config declares
+        # measurably hurt (see cnn14_model.py). Left at 30 s until A/B'd on a task
+        # with clips longer than 10 s; the two small tasks available here
+        # are all-short and cannot detect the difference.
+        max_audio_length_s: float = 30.0,
         **kwargs: Any,
     ):
         from muq import MuQMuLan

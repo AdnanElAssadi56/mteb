@@ -22,11 +22,14 @@ class CNN14Wrapper(AbsEncoder):
         self,
         model_name: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # CNN14 is trained on 10 s clips: the PANNs recipe pads/crops AudioSet to
-        # 10 s (arXiv:1912.10211 §IV-A), and this checkpoint is SimCLR-pretrained on
-        # VGGSound (10 s clips) then fine-tuned on ESC-50 (5 s). 30 s was an
-        # mteb-side default with no basis in the model.
-        max_audio_length_s: float = 10.0,
+        # NOTE: CNN14 is trained on 10-second clips (PANNs pads/crops AudioSet to 10 s, arXiv:1912.10211), so a
+        # 10 s cap looks "more native" than 30 s -- but lowering a cap
+        # removes signal, and that reasoning has already failed once in this
+        # file's history: setting CNN14's rate to the value its config declares
+        # measurably hurt (see cnn14_model.py). Left at 30 s until A/B'd on a task
+        # with clips longer than 10 s; the two small tasks available here
+        # are all-short and cannot detect the difference.
+        max_audio_length_s: float = 30.0,
         **kwargs: Any,
     ):
         self.model_name = model_name
@@ -42,12 +45,21 @@ class CNN14Wrapper(AbsEncoder):
             run_opts={"device": device},
         )
 
-        # The CNN14 checkpoint declares `sample_rate: 44100` in its SpeechBrain
-        # hyperparams.yaml, and its mel filterbank (n_fft=1024, hop 11.61ms,
-        # win 23.22ms) is derived from that rate. Feeding 16 kHz audio shifts
-        # every mel bin to the wrong frequency, so the rate must match.
-        # https://huggingface.co/speechbrain/cnn14-esc50/blob/main/hyperparams.yaml
-        self.sampling_rate = 44_100
+        # 16 kHz is correct here, despite the checkpoint's hyperparams.yaml
+        # declaring `sample_rate: 44100`. That field is the frontend's ms->samples
+        # conversion constant (hop 11.61 ms, win 23.22 ms, n_fft 1024), not a
+        # statement about what audio to feed; the encoder was SimCLR-pretrained on
+        # VGGSound and fine-tuned on ESC-50, both commonly distributed at 16 kHz,
+        # so the model learned features from 16 kHz audio through this
+        # 44.1 kHz-configured frontend.
+        #
+        # Changing it to 44100 was tried and measurably hurts, on both tasks
+        # tested (CNN14, CPU, mteb 2.20.12):
+        #   BeijingOpera          16 kHz 0.8088  vs  44.1 kHz 0.7458
+        #   GunshotTriangulation  16 kHz 0.8320  vs  44.1 kHz 0.5333
+        # The published result (0.8386 at mteb 2.4.2) is consistent with 16 kHz.
+        # Do not "correct" this to match the yaml without re-running that A/B.
+        self.sampling_rate = 16_000
 
     def _pad_audio_batch(self, batch: list[torch.Tensor]) -> torch.Tensor:  # noqa: PLR6301
         max_len = max(w.shape[0] for w in batch)

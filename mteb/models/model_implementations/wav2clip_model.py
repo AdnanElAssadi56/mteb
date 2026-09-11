@@ -26,11 +26,14 @@ class Wav2ClipZeroShotWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # Wav2CLIP is distilled on VGGSound "~200k 10-second clips (16kHz sample
-        # rate)", training on 5 s crops of them; at inference the authors use 1 s
-        # non-overlapping windows for frame-level features. 10 s matches the clip
-        # length the audio encoder actually saw. arXiv:2110.11499 §3.1
-        max_audio_length_s: float = 10.0,
+        # NOTE: Wav2CLIP is trained on 10-second clips (distilled on 10 s VGGSound clips, arXiv:2110.11499), so a
+        # 10 s cap looks "more native" than 30 s -- but lowering a cap
+        # removes signal, and that reasoning has already failed once in this
+        # file's history: setting CNN14's rate to the value its config declares
+        # measurably hurt (see cnn14_model.py). Left at 30 s until A/B'd on a task
+        # with clips longer than 10 s; the two small tasks available here
+        # are all-short and cannot detect the difference.
+        max_audio_length_s: float = 30.0,
         **kwargs: Any,
     ):
         from wav2clip import embed_audio, get_model
