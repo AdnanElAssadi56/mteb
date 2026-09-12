@@ -8,6 +8,7 @@ from transformers import Wav2Vec2FeatureExtractor, Wav2Vec2ForCTC, Wav2Vec2Model
 
 from mteb.models import ModelMeta
 from mteb.models.abs_encoder import AbsEncoder
+from mteb.models.audio_windowing import pool_windows, split_into_windows
 from mteb.models.modality_collators import AudioCollator
 
 if TYPE_CHECKING:
@@ -84,13 +85,13 @@ class Wav2Vec2AudioWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # 30 s is an mteb guard; pretraining cropped to 15.6/20 s (arXiv:2006.11477)
-        max_audio_length_seconds: float = 30.0,
+        # window, not a cut: pretraining cropped to 15.6 s Base / 20 s Large (arXiv:2006.11477 S4.2)
+        window_seconds: float | None = 15.6,
         **kwargs: Any,
     ):
         self.model_name = model_name
         self.device = device
-        self.max_audio_length_seconds = max_audio_length_seconds
+        self.window_seconds = window_seconds
 
         # Try to load base model first, fallback to CTC if needed
         try:
@@ -124,15 +125,21 @@ class Wav2Vec2AudioWrapper(AbsEncoder):
             inputs,
             disable=not show_progress_bar,
         ):
-            audio_arrays = [audio["array"] for audio in batch["audio"]]
+            clip_arrays = [audio["array"] for audio in batch["audio"]]
+            window_samples = (
+                int(self.window_seconds * self.sampling_rate)
+                if self.window_seconds is not None
+                else None
+            )
+            audio_arrays, owner = split_into_windows(
+                clip_arrays, window_samples, min_samples=self.sampling_rate // 10
+            )
 
             feature_inputs = self.feature_extractor(
                 audio_arrays,
                 sampling_rate=self.sampling_rate,
                 return_tensors="pt",
                 padding="longest",
-                truncation=True,
-                max_length=int(self.max_audio_length_seconds * self.sampling_rate),
                 return_attention_mask=True,
             ).to(self.device)
 
@@ -219,7 +226,11 @@ class Wav2Vec2AudioWrapper(AbsEncoder):
                     torch.isnan(embeddings), torch.zeros_like(embeddings), embeddings
                 )
 
-                all_embeddings.append(embeddings.cpu().detach())
+                # one embedding per window -> mean-pool back to one per clip
+                pooled = pool_windows(
+                    embeddings.cpu().detach().numpy(), owner, len(clip_arrays)
+                )
+                all_embeddings.append(torch.from_numpy(pooled))
 
         return torch.cat(all_embeddings, dim=0).numpy()
 
