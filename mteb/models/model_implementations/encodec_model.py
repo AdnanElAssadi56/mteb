@@ -29,7 +29,8 @@ class EncodecWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # no limit: chunk_length_s=null — https://huggingface.co/facebook/encodec_24khz/blob/main/config.json
+        # no limit: chunk_length_s=null
+        # https://huggingface.co/facebook/encodec_24khz/blob/main/config.json
         max_audio_length_seconds: float | None = None,
         **kwargs: Any,
     ):

@@ -26,7 +26,8 @@ class Qwen3VoiceEmbeddingWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # 24 kHz: sample_rate=24000; 30 s is an mteb cap — https://huggingface.co/marksverdhei/Qwen3-Voice-Embedding-12Hz-1.7B/blob/main/config.json
+        # 24 kHz: sample_rate=24000; 30 s is an mteb cap
+        # https://huggingface.co/marksverdhei/Qwen3-Voice-Embedding-12Hz-1.7B/blob/main/config.json
         max_audio_length_seconds: float = 30.0,
         **kwargs: Any,
     ):

@@ -40,7 +40,8 @@ class OmniVinciWrapper(AbsEncoder):
         revision: str,
         device: str | None = None,
         num_frames: int = 64,
-        # 120 s: audio_chunk_length=120, chunks internally — https://huggingface.co/nvidia/omnivinci/blob/main/config.json
+        # 120 s: audio_chunk_length=120, chunks internally
+        # https://huggingface.co/nvidia/omnivinci/blob/main/config.json
         max_audio_length_seconds: float = 120.0,
         **kwargs: Any,
     ) -> None:

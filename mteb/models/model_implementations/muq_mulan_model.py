@@ -24,7 +24,8 @@ class MuQMuLanWrapper(AbsEncoder):
         self,
         model_name: str = "OpenMuQ/MuQ-MuLan-large",
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # 10 s: MuQ-MuLan input length — https://arxiv.org/abs/2501.01108
+        # 10 s: MuQ-MuLan input length
+        # https://arxiv.org/abs/2501.01108
         window_seconds: float | None = 10.0,
         **kwargs: Any,
     ):

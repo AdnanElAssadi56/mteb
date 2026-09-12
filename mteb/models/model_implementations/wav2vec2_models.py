@@ -85,7 +85,8 @@ class Wav2Vec2AudioWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # 15.6 s: pretraining crop, Base — https://arxiv.org/abs/2006.11477
+        # 15.6 s: pretraining crop, Base
+        # https://arxiv.org/abs/2006.11477
         window_seconds: float | None = 15.6,
         **kwargs: Any,
     ):

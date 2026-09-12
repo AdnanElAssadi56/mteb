@@ -29,7 +29,8 @@ class MMSWrapper(AbsEncoder):
         revision: str | None = None,
         target_lang: str = "eng",
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # 20 s: s3prl UnfoldChunkByFrame, 2000 frames — https://github.com/s3prl/s3prl/blob/main/s3prl/dataset/chunking.py
+        # 20 s: s3prl UnfoldChunkByFrame, 2000 frames
+        # https://github.com/s3prl/s3prl/blob/main/s3prl/dataset/chunking.py
         window_seconds: float | None = 20.0,
         **kwargs: Any,
     ):

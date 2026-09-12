@@ -1068,7 +1068,8 @@ jina_embeddings_v5_omni_small = ModelMeta(
         fps=2.0,
         max_frames=64,
         target_sampling_rate=16000,
-        # 30 s is an mteb cap, no chunk_length declared — https://huggingface.co/jinaai/jina-embeddings-v5-omni-small
+        # 30 s is an mteb cap, no chunk_length declared
+        # https://huggingface.co/jinaai/jina-embeddings-v5-omni-small
         max_samples=30 * 16000,
         model_prompts=_OMNI_MODEL_PROMPTS,
     ),
@@ -1118,7 +1119,8 @@ jina_embeddings_v5_omni_nano = ModelMeta(
         fps=2.0,
         max_frames=64,
         target_sampling_rate=16000,
-        # 30 s is an mteb cap, no chunk_length declared — https://huggingface.co/jinaai/jina-embeddings-v5-omni-small
+        # 30 s is an mteb cap, no chunk_length declared
+        # https://huggingface.co/jinaai/jina-embeddings-v5-omni-small
         max_samples=30 * 16000,
         model_prompts=_OMNI_MODEL_PROMPTS,
     ),

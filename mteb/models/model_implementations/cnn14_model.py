@@ -22,7 +22,8 @@ class CNN14Wrapper(AbsEncoder):
         self,
         model_name: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # no limit: no duration declared — https://huggingface.co/speechbrain/cnn14-esc50/blob/main/hyperparams.yaml
+        # no limit: no duration declared
+        # https://huggingface.co/speechbrain/cnn14-esc50/blob/main/hyperparams.yaml
         max_audio_length_s: float | None = None,
         **kwargs: Any,
     ):
@@ -39,7 +40,8 @@ class CNN14Wrapper(AbsEncoder):
             run_opts={"device": device},
         )
 
-        # 44.1 kHz: sample_rate=44100 — https://huggingface.co/speechbrain/cnn14-esc50/blob/main/hyperparams.yaml
+        # 44.1 kHz: sample_rate=44100
+        # https://huggingface.co/speechbrain/cnn14-esc50/blob/main/hyperparams.yaml
         self.sampling_rate = 44_100
 
     def _pad_audio_batch(self, batch: list[torch.Tensor]) -> torch.Tensor:  # noqa: PLR6301

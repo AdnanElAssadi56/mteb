@@ -39,7 +39,8 @@ class ASTWrapper(AbsEncoder):
             self.device
         )
         self.model.eval()
-        # 10.24 s: max_length=1024 frames — https://huggingface.co/MIT/ast-finetuned-audioset-10-10-0.4593/blob/main/preprocessor_config.json
+        # 10.24 s: max_length=1024 frames
+        # https://huggingface.co/MIT/ast-finetuned-audioset-10-10-0.4593/blob/main/preprocessor_config.json
         self.sampling_rate = self.feature_extractor.sampling_rate
 
     @torch.no_grad()
@@ -57,7 +58,8 @@ class ASTWrapper(AbsEncoder):
             disable=not show_progress_bar,
         ):
             clip_arrays = [a["array"] for a in batch["audio"]]
-            # 10.24 s: max_length=1024 frames — https://huggingface.co/MIT/ast-finetuned-audioset-10-10-0.4593/blob/main/preprocessor_config.json
+            # 10.24 s: max_length=1024 frames
+            # https://huggingface.co/MIT/ast-finetuned-audioset-10-10-0.4593/blob/main/preprocessor_config.json
             audio_arrays, owner = split_into_windows(
                 clip_arrays,
                 int(10.24 * self.sampling_rate),
