@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 
 
 # LanguageBind expects audio sampled at 16 kHz (its audio mel-spectrogram pipeline).
-# 16 kHz per config (vision_config.audio_sample_rate); no length declared
+# 16 kHz: vision_config.audio_sample_rate (config.json); no length declared
 _LANGUAGE_BIND_AUDIO_SR = 16000
 
 _LANGUAGEBIND_SHIM_APPLIED: list[bool] = []
@@ -124,7 +124,7 @@ class LanguageBindVideoWrapper(_LanguageBindBase):
         revision: str | None = None,
         fps: float | None = None,
         max_frames: int | None = None,
-        # 8 frames native (LanguageBind's video branch trains on 8-frame clips)
+        # 8 frames: LanguageBind trains on 8-frame clips
         num_frames: int | None = 8,
         max_samples: int | None = None,
         **kwargs: Any,

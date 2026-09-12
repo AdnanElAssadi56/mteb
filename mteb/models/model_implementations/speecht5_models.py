@@ -28,7 +28,7 @@ class SpeechT5Audio(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # 80 s native: declares max_speech_positions=4000 at 50 fps (conv_stride 320x)
+        # 80 s: max_speech_positions=4000 at 50 fps (config.json)
         max_audio_length_s: float = 80.0,
         **kwargs: Any,
     ):
@@ -225,7 +225,7 @@ class SpeechT2Multimodal(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # 80 s native: declares max_speech_positions=4000 at 50 fps (conv_stride 320x)
+        # 80 s: max_speech_positions=4000 at 50 fps (config.json)
         max_audio_length_s: float = 80.0,
         **kwargs: Any,
     ):

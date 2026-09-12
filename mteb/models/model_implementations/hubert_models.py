@@ -25,7 +25,7 @@ class HubertWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # window, not a cut: LibriSpeech utterances; s3prl chunks at 20 s (UnfoldChunkByFrame, 2000 frames)
+        # 20 s: s3prl UnfoldChunkByFrame, 2000 frames
         window_seconds: float | None = 20.0,
         **kwargs: Any,
     ):

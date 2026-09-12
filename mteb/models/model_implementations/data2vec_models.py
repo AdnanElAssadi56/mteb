@@ -25,7 +25,7 @@ class Data2VecAudioWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # window, not a cut: X-ARES reference encoder splits data2vec at 10 s (example/data2vec/data2vec_encoder.py)
+        # 10 s: X-ARES reference encoder (example/data2vec/data2vec_encoder.py)
         window_seconds: float | None = 10.0,
         **kwargs: Any,
     ):

@@ -32,11 +32,11 @@ class PEAudioVisualWrapper(AbsEncoder):
         self,
         model_name: str = "facebook/pe-av-large",
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # fps=2 is Qwen's shipped default (qwen-vl-utils); max_frames is an mteb cap
+        # fps=2: qwen-vl-utils FPS=2.0; max_frames is an mteb cap
         fps: float | None = 2.0,
         max_frames: int | None = 64,
         num_frames: int | None = None,
-        # 400 s native: max_position_embeddings=10000 at the DAC's 25 frames/s
+        # 400 s: max_position_embeddings=10000 at 25 frames/s (config.json)
         max_samples: int | None = 400 * 48000,
         **kwargs: Any,
     ):

@@ -32,7 +32,7 @@ def vggish_loader(*args: Any, **kwargs: Any) -> EncoderProtocol:
         def __init__(
             self,
             device: str = "cuda" if torch.cuda.is_available() else "cpu",
-            # no native limit: 0.96 s patches, no max (torchvggish vggish_params.py)
+            # no limit: 0.96 s patches, no max (torchvggish vggish_params.py)
             max_audio_length_seconds: float | None = None,
             **kwargs: Any,
         ):
@@ -44,7 +44,7 @@ def vggish_loader(*args: Any, **kwargs: Any) -> EncoderProtocol:
             self.converter = WaveformToInput()
             self.sampling_rate = 16000
             self.embed_dim = 128
-            # 0.96 s patches, mean-pooled over the clip (arXiv:1609.09430)
+            # 0.96 s patches (arXiv:1609.09430)
             self.min_samples = int(0.96 * self.sampling_rate)  # 15,360 samples
 
         def _resample_audio(

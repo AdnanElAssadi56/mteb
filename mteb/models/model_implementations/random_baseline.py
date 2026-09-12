@@ -176,7 +176,7 @@ def _attach_modality_collator(
         requires_audio_dependencies()
         requires_image_dependencies()
         inputs.collate_fn = VideoCollator(
-            # 16 kHz, the benchmark's most common rate; never encoded anyway
+            # random baseline: never encoded, rate only needs to be valid
             target_sampling_rate=16000,
             fps=fps,
             max_frames=max_frames,
@@ -418,7 +418,7 @@ class RandomEncoderBaseline:
         embed_dim: int | None = None,
         fps: float | None = None,
         max_frames: int | None = None,
-        # never encoded; value only needs to be valid
+        # random baseline: never encoded
         num_frames: int | None = 10,
         **kwargs: Any,
     ) -> None:
@@ -569,7 +569,7 @@ class RandomSparseEncoderBaseline:
         n_nonzero: int | None = None,
         fps: float | None = None,
         max_frames: int | None = None,
-        # never encoded; value only needs to be valid
+        # random baseline: never encoded
         num_frames: int | None = 10,
         **kwargs: Any,
     ) -> None:
@@ -666,7 +666,7 @@ class RandomColBERTBaseline:
         num_tokens: int | None = None,
         fps: float | None = None,
         max_frames: int | None = None,
-        # never encoded; value only needs to be valid
+        # random baseline: never encoded
         num_frames: int | None = 10,
         **kwargs: Any,
     ) -> None:

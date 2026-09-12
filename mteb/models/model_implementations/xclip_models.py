@@ -170,7 +170,7 @@ xclip_base_patch32 = ModelMeta(
     max_tokens=77,
     embed_dim=512,
     reference="https://huggingface.co/microsoft/xclip-base-patch32",
-    # 8 frames native: config declares num_frames=8
+    # 8 frames: num_frames=8 (config.json)
     loader_kwargs=dict(num_frames=8),
     **_XCLIP_COMMON,
 )

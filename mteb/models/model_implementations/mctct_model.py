@@ -87,7 +87,7 @@ class MCTCTWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # 27.6 s native: max_position_embeddings=920 at 30 ms/frame (10 ms hop, conv_stride 3)
+        # 27.6 s: max_position_embeddings=920 at 30 ms/frame (config.json)
         max_audio_length_seconds: float = 27.6,
         **kwargs: Any,
     ):

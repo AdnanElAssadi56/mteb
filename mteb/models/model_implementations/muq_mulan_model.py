@@ -23,7 +23,7 @@ class MuQMuLanWrapper(AbsEncoder):
         self,
         model_name: str = "OpenMuQ/MuQ-MuLan-large",
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # 10 s native (arXiv:2501.01108)
+        # 10 s: arXiv:2501.01108
         max_audio_length_s: float = 10.0,
         **kwargs: Any,
     ):

@@ -13,7 +13,7 @@ INTERNVIDEO2_CITATION = """
 
 internvideo2_clip_1b_224p_f8 = ModelMeta(
     loader=SentenceTransformerEncoderWrapper,
-    # 8 frames native (checkpoint names encode the count, e.g. -f4)
+    # 8 frames: encoded in the checkpoint name (e.g. -f4)
     loader_kwargs=dict(num_frames=8, trust_remote_code=True),
     name="OpenGVLab/InternVideo2-CLIP-1B-224p-f8",  # discussions/3
     revision="2e08ec173489fc13a6e4ca2d9807927b73c653a3",

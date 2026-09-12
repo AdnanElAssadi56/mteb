@@ -27,9 +27,9 @@ class QwenOmniWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str | None = None,
-        # 300 s native: declares chunk_length=300 (docs' "under 30 s" is chat advice)
+        # 300 s: chunk_length=300 (preprocessor_config.json)
         max_audio_length_seconds: int = 300,
-        # fps=2 is Qwen's shipped default (qwen-vl-utils); max_frames is an mteb cap
+        # fps=2: qwen-vl-utils FPS=2.0; max_frames is an mteb cap
         fps: float | None = 2.0,
         max_frames: int | None = 64,
         num_frames: int | None = None,

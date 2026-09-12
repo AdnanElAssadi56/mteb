@@ -25,8 +25,7 @@ class SeamlessM4TWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # window, not a cut: Meta's own demo uses MAX_INPUT_AUDIO_LENGTH = 10
-        # (seamless_communication/demo/expressive/app.py); no limit is declared
+        # 10 s: MAX_INPUT_AUDIO_LENGTH (seamless_communication demo/expressive/app.py)
         window_seconds: float | None = 10.0,
         **kwargs: Any,
     ):

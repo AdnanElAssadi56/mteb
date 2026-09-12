@@ -25,7 +25,7 @@ class Qwen2AudioWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # 30 s native: extractor declares chunk_length=30 / n_samples=480000
+        # 30 s: chunk_length=30 (preprocessor_config.json)
         max_audio_length_seconds: float = 30.0,
         **kwargs: Any,
     ):

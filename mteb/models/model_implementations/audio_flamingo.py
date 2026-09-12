@@ -25,7 +25,7 @@ class AudioFlamingoWrapper(AbsEncoder):
         model_name: str,
         revision: str | None = None,
         device: str | None = None,
-        # AF3 takes 10 min, in internal 30 s windows (arXiv:2507.08128 + model card)
+        # 600 s: "Max Audio Length: 10 Minutes" (model card, arXiv:2507.08128)
         max_audio_length_seconds: float = 600.0,
         torch_dtype: torch.dtype = torch.bfloat16,
         device_map: str | dict | None = None,

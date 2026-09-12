@@ -19,11 +19,11 @@ class OmniEmbedNemotronWrapper(SentenceTransformerEncoderWrapper):
         model: str,
         revision: str | None = None,
         device: str | None = None,
-        # fps=2 is Qwen's shipped default (qwen-vl-utils); max_frames is an mteb cap
+        # fps=2: qwen-vl-utils FPS=2.0; max_frames is an mteb cap
         fps: float | None = 2.0,
         max_frames: int | None = 64,
         num_frames: int | None = None,
-        # 300 s native: preprocessor declares chunk_length=300 / n_samples=4800000
+        # 300 s: chunk_length=300 (preprocessor_config.json)
         max_audio_length: int = 4_800_000,
         **kwargs: Any,
     ) -> None:

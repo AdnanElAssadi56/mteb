@@ -99,7 +99,7 @@ class ImageBindWrapper(AbsEncoder):
         from torchvision import transforms
 
         sample_rate = 16_000
-        # ImageBind's own data.py defaults; covers 3x2 s of any clip (upstream)
+        # clip_duration=2, clips_per_video=3 (ImageBind data.py)
         clip_sampler = ConstantClipsPerVideoSampler(clip_duration=2, clips_per_video=3)
         normalize = transforms.Normalize(mean=-4.268, std=9.138)
 
