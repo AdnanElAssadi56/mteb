@@ -104,7 +104,6 @@ class Data2VecAudioWrapper(AbsEncoder):
                 valid_tokens = hidden_attention_mask.sum(dim=1)
                 embeddings = masked_embeddings.sum(dim=1) / valid_tokens.clamp(min=1e-9)
 
-                # one embedding per window -> mean-pool back to one per clip
                 pooled = pool_windows(
                     embeddings.cpu().detach().numpy(), owner, len(clip_arrays)
                 )

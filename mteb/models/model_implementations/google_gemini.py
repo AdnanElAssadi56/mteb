@@ -55,6 +55,7 @@ MULTILINGUAL_EVALUATED_LANGUAGES = [
 
 GEMINI_VIDEO_FPS = 1.0
 GEMINI_MAX_VIDEO_FRAMES = 32
+# mteb-side cost cap: the API allows 9.5 h and bills 32 tokens/s of audio
 GEMINI_MAX_AUDIO_SECONDS = 180
 
 GEMINI_EMBEDDING_CITATION = """@misc{lee2025geminiembeddinggeneralizableembeddings,

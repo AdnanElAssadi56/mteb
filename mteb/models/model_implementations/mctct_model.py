@@ -87,8 +87,8 @@ class MCTCTWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # 30 s is an mteb memory guard, not native: variable-length encoder
-        max_audio_length_seconds: float = 30.0,
+        # 27.6 s native: max_position_embeddings=920 at 30 ms/frame (10 ms hop, conv_stride 3)
+        max_audio_length_seconds: float = 27.6,
         **kwargs: Any,
     ):
         from transformers import MCTCTFeatureExtractor, MCTCTModel

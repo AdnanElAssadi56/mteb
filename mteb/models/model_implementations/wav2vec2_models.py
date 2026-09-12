@@ -226,7 +226,6 @@ class Wav2Vec2AudioWrapper(AbsEncoder):
                     torch.isnan(embeddings), torch.zeros_like(embeddings), embeddings
                 )
 
-                # one embedding per window -> mean-pool back to one per clip
                 pooled = pool_windows(
                     embeddings.cpu().detach().numpy(), owner, len(clip_arrays)
                 )
