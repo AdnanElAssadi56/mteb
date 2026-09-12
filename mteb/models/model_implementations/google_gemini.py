@@ -55,8 +55,8 @@ MULTILINGUAL_EVALUATED_LANGUAGES = [
 
 GEMINI_VIDEO_FPS = 1.0
 GEMINI_MAX_VIDEO_FRAMES = 32
-# cost cap, not a model limit: the API allows 9.5 h at 32 tokens/s of audio.
-# 180 s fully covers 98.2% of mteb audio tasks by average clip length.
+# native: the Gemini Embedding API documents "Maximum duration of 180 seconds"
+# for audio embedding requests (ai.google.dev/gemini-api/docs/embeddings)
 GEMINI_MAX_AUDIO_SECONDS = 180
 
 GEMINI_EMBEDDING_CITATION = """@misc{lee2025geminiembeddinggeneralizableembeddings,
