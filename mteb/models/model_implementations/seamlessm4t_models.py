@@ -24,10 +24,7 @@ class SeamlessM4TWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # No native limit declared: the v2 speech encoder uses relative position
-        # embeddings + chunked attention, so 30 s is an mteb memory guard like the
-        # other variable-length speech encoders. (Was 5 s, which came from #2751
-        # where it was only validated on BeijingOpera's 1.7 s clips.)
+        # no limit declared (relative pos + chunked attn); 30 s is an mteb memory guard
         max_audio_length_seconds: float = 30.0,
         **kwargs: Any,
     ):

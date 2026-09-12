@@ -89,13 +89,11 @@ class BidirLMOmniEncoder(AbsEncoder):
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
         trust_remote_code: bool = True,
         max_text_length: int = 1024,
-        # fps=2 is Qwen's shipped default (qwen-vl-utils FPS=2.0, max 768 frames);
-        # max_frames is an mteb cost cap, and frames are sampled across the whole clip
+        # fps=2 is Qwen's shipped default (qwen-vl-utils); max_frames is an mteb cap
         fps: float | None = 2.0,
         max_frames: int | None = 64,
         num_frames: int | None = None,
-        # 30 s native: BidirLM ships its own chunk_length=30; not a Qwen2.5-Omni
-        # derivative, so do not unify it with the 300 s models
+        # 30 s native: own chunk_length=30, not a Qwen2.5-Omni derivative
         max_samples: int | None = 30 * 16_000,
         **kwargs: Any,
     ) -> None:

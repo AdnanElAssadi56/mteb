@@ -38,7 +38,7 @@ class ASTWrapper(AbsEncoder):
             self.device
         )
         self.model.eval()
-        # from the checkpoint: 16 kHz, and its own max_length=1024 frames = 10.24 s
+        # 16 kHz; processor's own max_length=1024 frames = 10.24 s (arXiv:2104.01778)
         self.sampling_rate = self.feature_extractor.sampling_rate
 
     @torch.no_grad()
@@ -59,8 +59,7 @@ class ASTWrapper(AbsEncoder):
             for a in batch["audio"]:
                 array = a["array"]
                 # Ensure minimum length for AST feature extractor (window size is 400)
-                # AudioCollator yields a numpy array, so pad in numpy rather than
-                # mixing it with a torch tensor (which raises).
+                # AudioCollator yields numpy; pad in numpy (mixing with torch raises)
                 min_samples = 401  # Just above the window size
                 array = np.asarray(array)
                 if array.shape[-1] < min_samples:

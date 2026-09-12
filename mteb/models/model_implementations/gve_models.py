@@ -54,8 +54,7 @@ class GVEWrapper(AbsEncoder):
         *,
         device: str | None = None,
         max_length: int = 4096,
-        # fps=2 is Qwen's shipped default (qwen-vl-utils FPS=2.0, max 768 frames);
-        # max_frames is an mteb cost cap, and frames are sampled across the whole clip
+        # fps=2 is Qwen's shipped default (qwen-vl-utils); max_frames is an mteb cap
         fps: float | None = 2.0,
         max_frames: int | None = 32,
         num_frames: int | None = None,

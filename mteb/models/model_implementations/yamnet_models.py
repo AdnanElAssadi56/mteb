@@ -32,8 +32,7 @@ def yamnet_loader(*args: Any, **kwargs: Any) -> EncoderProtocol:
         def __init__(
             self,
             device: str = "cuda" if torch.cuda.is_available() else "cpu",
-            # No native limit: YAMNet emits a 0.96 s patch every
-            # patch_hop_seconds (0.48) with no maximum, mean-pooled below.
+            # no native limit: 0.96 s patches, hop 0.48, no max (yamnet/params.py)
             max_audio_length_seconds: float | None = None,
             **kwargs: Any,
         ):

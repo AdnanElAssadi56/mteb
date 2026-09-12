@@ -22,10 +22,7 @@ class CNN14Wrapper(AbsEncoder):
         self,
         model_name: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # No native limit: PANNs CNN14 is convolutional with global pooling and
-        # the checkpoint's hyperparams declare only STFT params, no duration.
-        # (Training used 10 s AudioSet clips, arXiv:1912.10211 -- a training crop,
-        # not an inference bound.)
+        # no native limit: conv + global pooling, hyperparams.yaml declares no duration
         max_audio_length_s: float | None = None,
         **kwargs: Any,
     ):
@@ -42,8 +39,7 @@ class CNN14Wrapper(AbsEncoder):
             run_opts={"device": device},
         )
 
-        # 44.1 kHz per the checkpoint's hyperparams.yaml; at 16 kHz it misreads
-        # its own example_dogbark.wav ("hand_saw")
+        # 44.1 kHz per hyperparams.yaml (at 16 kHz it misreads its own example_dogbark.wav)
         self.sampling_rate = 44_100
 
     def _pad_audio_batch(self, batch: list[torch.Tensor]) -> torch.Tensor:  # noqa: PLR6301

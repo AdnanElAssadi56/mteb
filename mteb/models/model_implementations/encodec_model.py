@@ -29,8 +29,7 @@ class EncodecWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # No native limit: the checkpoint declares `chunk_length_s: null` -- a
-        # fully convolutional streaming codec with no fixed input length.
+        # no native limit: checkpoint declares `chunk_length_s: null`
         max_audio_length_seconds: float | None = None,
         **kwargs: Any,
     ):
@@ -72,8 +71,7 @@ class EncodecWrapper(AbsEncoder):
             for array in audio_array:
                 # Ensure minimum length for encoder (Encodec needs ~320 samples per frame)
                 # Use 1 second minimum to be safe
-                # AudioCollator yields a numpy array, so pad in numpy rather than
-                # mixing it with a torch tensor (which raises).
+                # AudioCollator yields numpy; pad in numpy (mixing with torch raises)
                 min_samples = self.sampling_rate
                 array = np.asarray(array)  # noqa: PLW2901
                 if array.shape[-1] < min_samples:

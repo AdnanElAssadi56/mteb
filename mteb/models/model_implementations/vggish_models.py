@@ -32,9 +32,7 @@ def vggish_loader(*args: Any, **kwargs: Any) -> EncoderProtocol:
         def __init__(
             self,
             device: str = "cuda" if torch.cuda.is_available() else "cpu",
-            # No native limit: torchvggish emits one 0.96 s patch per
-            # EXAMPLE_HOP_SECONDS with no maximum, and this wrapper mean-pools
-            # them, so the whole clip is covered. HEAR passes full clips.
+            # no native limit: 0.96 s patches, no max (torchvggish vggish_params.py)
             max_audio_length_seconds: float | None = None,
             **kwargs: Any,
         ):
