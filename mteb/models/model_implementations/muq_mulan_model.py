@@ -8,6 +8,7 @@ from tqdm.auto import tqdm
 
 from mteb.models import ModelMeta
 from mteb.models.abs_encoder import AbsEncoder
+from mteb.models.audio_windowing import pool_windows, split_into_windows
 from mteb.models.modality_collators import AudioCollator
 
 if TYPE_CHECKING:
@@ -23,8 +24,8 @@ class MuQMuLanWrapper(AbsEncoder):
         self,
         model_name: str = "OpenMuQ/MuQ-MuLan-large",
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # 10 s: arXiv:2501.01108
-        max_audio_length_s: float = 10.0,
+        # 10 s: arXiv:2501.01108; MARBLE windows long tracks and averages
+        window_seconds: float | None = 10.0,
         **kwargs: Any,
     ):
         from muq import MuQMuLan
@@ -32,7 +33,7 @@ class MuQMuLanWrapper(AbsEncoder):
         self.model_name = model_name
         self.device = device
         self.sampling_rate = 24000
-        self.max_audio_length_s = max_audio_length_s
+        self.window_seconds = window_seconds
         # Apply audio truncation (30 seconds max)
         self.max_length_samples = int(self.max_audio_length_s * self.sampling_rate)
 
@@ -54,13 +55,18 @@ class MuQMuLanWrapper(AbsEncoder):
             inputs,
             disable=not show_progress_bar,
         ):
-            audio_arrays = []
-            audio_array = [audio["array"] for audio in batch["audio"]]
-            for array in audio_array:
-                # Apply audio truncation (30 seconds max)
-                if array.shape[-1] > self.max_length_samples:
-                    array = array[..., : self.max_length_samples]  # noqa: PLW2901
-                audio_arrays.append(array)
+            clip_arrays = [audio["array"] for audio in batch["audio"]]
+            window_samples = (
+                int(self.window_seconds * self.sampling_rate)
+                if self.window_seconds is not None
+                else None
+            )
+            audio_arrays, owner = split_into_windows(
+                clip_arrays, window_samples, min_samples=self.sampling_rate // 10
+            )
+            audio_arrays = [
+                torch.as_tensor(a, dtype=torch.float32) for a in audio_arrays
+            ]
 
             # Find max length and pad all tensors
             max_length = max(arr.shape[-1] for arr in audio_arrays)
@@ -77,12 +83,10 @@ class MuQMuLanWrapper(AbsEncoder):
             with torch.no_grad():
                 # Process entire batch at once
                 audio_embeds = self.model(wavs=batch_tensor)
-                all_features.extend(
-                    [
-                        embed.cpu().detach().numpy().reshape(1, -1)
-                        for embed in audio_embeds
-                    ]
+                pooled = pool_windows(
+                    audio_embeds.cpu().detach().numpy(), owner, len(clip_arrays)
                 )
+                all_features.extend([row.reshape(1, -1) for row in pooled])
 
         return np.vstack(all_features)
 
