@@ -24,9 +24,11 @@ class SeamlessM4TWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # UNVERIFIED: from #2751, fit to BeijingOpera (1.7 s avg clips); the model
-        # declares no limit and Meta's demo caps at 10 s
-        max_audio_length_seconds: float = 5.0,
+        # No native limit declared: the v2 speech encoder uses relative position
+        # embeddings + chunked attention, so 30 s is an mteb memory guard like the
+        # other variable-length speech encoders. (Was 5 s, which came from #2751
+        # where it was only validated on BeijingOpera's 1.7 s clips.)
+        max_audio_length_seconds: float = 30.0,
         **kwargs: Any,
     ):
         self.model_name = model_name
@@ -50,7 +52,9 @@ class SeamlessM4TWrapper(AbsEncoder):
         show_progress_bar: bool = True,
         **kwargs: Any,
     ) -> Array:
-        inputs.collate_fn = AudioCollator(self.sampling_rate, self.max_samples)
+        inputs.collate_fn = AudioCollator(
+            target_sampling_rate=self.sampling_rate, max_samples=self.max_samples
+        )
         all_embeddings = []
 
         for batch in tqdm(

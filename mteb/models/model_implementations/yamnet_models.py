@@ -32,8 +32,9 @@ def yamnet_loader(*args: Any, **kwargs: Any) -> EncoderProtocol:
         def __init__(
             self,
             device: str = "cuda" if torch.cuda.is_available() else "cpu",
-            # 30 s cap is ours; patches are mean-pooled so raising it is linear
-            max_audio_length_seconds: float = 30.0,
+            # No native limit: YAMNet emits a 0.96 s patch every
+            # patch_hop_seconds (0.48) with no maximum, mean-pooled below.
+            max_audio_length_seconds: float | None = None,
             **kwargs: Any,
         ):
             self.device = device
@@ -70,9 +71,10 @@ def yamnet_loader(*args: Any, **kwargs: Any) -> EncoderProtocol:
                 audio = audio.mean(dim=0)
 
             # Apply audio truncation
-            max_length = int(self.max_audio_length_seconds * self.sampling_rate)
-            if audio.shape[-1] > max_length:
-                audio = audio[..., :max_length]
+            if self.max_audio_length_seconds is not None:
+                max_length = int(self.max_audio_length_seconds * self.sampling_rate)
+                if audio.shape[-1] > max_length:
+                    audio = audio[..., :max_length]
 
             # Normalize to [-1.0, 1.0]
             if audio.numel() > 0 and audio.abs().max() > 1.0:

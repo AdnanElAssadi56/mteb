@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING, Any
 
+import numpy as np
 import torch
 from tqdm.auto import tqdm
 from transformers import ASTFeatureExtractor, ASTModel
@@ -58,12 +59,14 @@ class ASTWrapper(AbsEncoder):
             for a in batch["audio"]:
                 array = a["array"]
                 # Ensure minimum length for AST feature extractor (window size is 400)
+                # AudioCollator yields a numpy array, so pad in numpy rather than
+                # mixing it with a torch tensor (which raises).
                 min_samples = 401  # Just above the window size
-                if len(array) < min_samples:
-                    padding = torch.zeros(min_samples - len(array))
-                    array = torch.cat([array, padding])
+                array = np.asarray(array)
+                if array.shape[-1] < min_samples:
+                    array = np.pad(array, (0, min_samples - array.shape[-1]))
 
-                audio_arrays.append(array.numpy())
+                audio_arrays.append(array)
 
             features = self.feature_extractor(
                 audio_arrays,

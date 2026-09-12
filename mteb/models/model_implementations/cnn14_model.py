@@ -22,9 +22,11 @@ class CNN14Wrapper(AbsEncoder):
         self,
         model_name: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # 30 s is ours; PANNs trains on 10 s clips (arXiv:1912.10211) but lowering
-        # a cap removes signal and is untested here
-        max_audio_length_s: float = 30.0,
+        # No native limit: PANNs CNN14 is convolutional with global pooling and
+        # the checkpoint's hyperparams declare only STFT params, no duration.
+        # (Training used 10 s AudioSet clips, arXiv:1912.10211 -- a training crop,
+        # not an inference bound.)
+        max_audio_length_s: float | None = None,
         **kwargs: Any,
     ):
         self.model_name = model_name
@@ -70,9 +72,10 @@ class CNN14Wrapper(AbsEncoder):
                 array = array.squeeze()
 
                 # Apply audio truncation (configurable limit)
-                max_length = int(self.max_audio_length_s * self.sampling_rate)
-                if array.shape[-1] > max_length:
-                    array = array[..., :max_length]
+                if self.max_audio_length_s is not None:
+                    max_length = int(self.max_audio_length_s * self.sampling_rate)
+                    if array.shape[-1] > max_length:
+                        array = array[..., :max_length]
 
                 audio_tensors.append(array)
 

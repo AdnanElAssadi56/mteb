@@ -74,8 +74,9 @@ def already_done(model_name: str, task_names: list[str], offline: bool) -> set[s
     if offline:
         return set()
     try:
-        results = mteb.load_results(models=[model_name], tasks=task_names,
-                                    only_main_score=True)
+        results = mteb.load_results(
+            models=[model_name], tasks=task_names, only_main_score=True
+        )
     except Exception as exc:  # noqa: BLE001
         logger.warning("could not read results repo (%s); running everything", exc)
         return set()
@@ -93,17 +94,42 @@ def main() -> int:
     p.add_argument("--shard", default="0/1", help="i/N, e.g. 2/8")
     p.add_argument("--batch-size", type=int, default=4)
     p.add_argument("--device", default=None)
-    p.add_argument("--num-proc", type=int, default=4,
-                   help="dataloader workers; media decode is the bottleneck")
+    p.add_argument(
+        "--num-proc",
+        type=int,
+        default=4,
+        help="dataloader workers; media decode is the bottleneck",
+    )
     p.add_argument("--dry-run", action="store_true", help="list the work and exit")
-    p.add_argument("--offline", action="store_true",
-                   help="skip the results-repo check (run everything eligible)")
-    p.add_argument("--submit", action="store_true",
-                   help="after running, open a PR against the results repo")
+    p.add_argument(
+        "--offline",
+        action="store_true",
+        help="skip the results-repo check (run everything eligible)",
+    )
+    p.add_argument(
+        "--submit",
+        action="store_true",
+        help="after running, open a PR against the results repo",
+    )
     p.add_argument("--no-text-anchor", action="store_true")
     p.add_argument("--limit", type=int, default=None, help="cap task count (testing)")
-    p.add_argument("--only-modality", default=None,
-                   help="restrict to tasks declaring this modality, e.g. audio")
+    p.add_argument(
+        "--only-modality",
+        default=None,
+        help="restrict to tasks declaring this modality, e.g. audio",
+    )
+    p.add_argument(
+        "--tasks",
+        nargs="+",
+        default=None,
+        help="explicit task list, overriding eligibility discovery",
+    )
+    p.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="re-run even if results exist (incl. published ones in the "
+        "downloaded results cache); needed to measure a wrapper fix",
+    )
     args = p.parse_args()
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s")
@@ -118,10 +144,13 @@ def main() -> int:
     index, total = (int(x) for x in args.shard.split("/"))
     meta = mteb.get_model_meta(args.model)
 
-    pool = eligible_tasks(meta, include_text_anchor=not args.no_text_anchor)
-    if args.only_modality:
+    pool = args.tasks or eligible_tasks(
+        meta, include_text_anchor=not args.no_text_anchor
+    )
+    if args.only_modality and not args.tasks:
         keep = {
-            t.metadata.name for t in mteb.get_tasks(exclude_beta=False)
+            t.metadata.name
+            for t in mteb.get_tasks(exclude_beta=False)
             if args.only_modality in (t.metadata.modalities or [])
         }
         pool = [t for t in pool if t in keep]
@@ -144,24 +173,58 @@ def main() -> int:
 
     cache = mteb.ResultCache()
     failures = []
+
+    def _is_oom(exc: BaseException) -> bool:
+        text = f"{type(exc).__name__} {exc}".lower()
+        return "outofmemory" in text or "out of memory" in text
+
     for n, task_name in enumerate(todo, 1):
         started = time.time()
-        try:
-            task = mteb.get_tasks(tasks=[task_name])[0]
-            mteb.evaluate(
-                mteb.get_model(args.model, device=args.device),
-                [task],
-                cache=cache,
-                encode_kwargs={"batch_size": args.batch_size},
-                num_proc=args.num_proc,
-                overwrite_strategy="only-missing",
-                raise_error=False,
-            )
-            logger.info("[%d/%d] %s ok (%.1f min)",
-                        n, len(todo), task_name, (time.time() - started) / 60)
-        except Exception as exc:  # noqa: BLE001 - one bad task must not end the run
-            failures.append((task_name, f"{type(exc).__name__}: {exc}"))
-            logger.exception("[%d/%d] %s FAILED", n, len(todo), task_name)
+        batch = args.batch_size
+        while True:
+            try:
+                task = mteb.get_tasks(tasks=[task_name])[0]
+                mteb.evaluate(
+                    mteb.get_model(args.model, device=args.device),
+                    [task],
+                    cache=cache,
+                    encode_kwargs={"batch_size": batch},
+                    num_proc=args.num_proc,
+                    overwrite_strategy="always" if args.overwrite else "only-missing",
+                    raise_error=True,
+                )
+                logger.info(
+                    "[%d/%d] %s ok (%.1f min, batch=%d)",
+                    n,
+                    len(todo),
+                    task_name,
+                    (time.time() - started) / 60,
+                    batch,
+                )
+                break
+            except Exception as exc:  # noqa: BLE001 - one bad task must not end the run
+                # A long clip at a large batch is the usual cause; halve and retry
+                # rather than losing the task. Below batch 1 it is a real failure.
+                if _is_oom(exc) and batch > 1:
+                    import gc
+
+                    import torch
+
+                    batch = max(1, batch // 2)
+                    gc.collect()
+                    if torch.cuda.is_available():
+                        torch.cuda.empty_cache()
+                    logger.warning(
+                        "[%d/%d] %s OOM -> retrying at batch=%d",
+                        n,
+                        len(todo),
+                        task_name,
+                        batch,
+                    )
+                    continue
+                failures.append((task_name, f"{type(exc).__name__}: {exc}"))
+                logger.exception("[%d/%d] %s FAILED", n, len(todo), task_name)
+                break
 
     print(f"\ndone: {len(todo) - len(failures)}/{len(todo)} tasks")
     for name, err in failures:

@@ -40,6 +40,8 @@ class OmniVinciWrapper(AbsEncoder):
         revision: str,
         device: str | None = None,
         num_frames: int = 64,
+        # 30 s native: OmniVinci declares chunk_length=30 / n_samples=480000
+        # https://huggingface.co/nvidia/omnivinci/blob/main/preprocessor_config.json
         max_audio_length_seconds: float = 30.0,
         **kwargs: Any,
     ) -> None:

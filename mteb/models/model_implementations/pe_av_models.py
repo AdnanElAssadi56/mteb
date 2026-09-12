@@ -37,8 +37,9 @@ class PEAudioVisualWrapper(AbsEncoder):
         fps: float | None = 2.0,
         max_frames: int | None = 64,
         num_frames: int | None = None,
-        # 48 kHz from the checkpoint; 30 s is ours (encoder has ~400 s of positions)
-        max_samples: int | None = 30 * 48000,
+        # 400 s native: the audio encoder declares max_position_embeddings=10000
+        # at the DAC's 25 frames/s (hop 1920 @ 48 kHz) -> 400 s of capacity.
+        max_samples: int | None = 400 * 48000,
         **kwargs: Any,
     ):
         from transformers import PeAudioVideoModel, PeAudioVideoProcessor
