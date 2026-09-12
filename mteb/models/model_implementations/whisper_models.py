@@ -25,7 +25,7 @@ class WhisperAudioWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # 30 s: chunk_length=30 (preprocessor_config.json)
+        # 30 s: chunk_length=30 — https://huggingface.co/openai/whisper-large-v3/blob/main/preprocessor_config.json
         window_seconds: float | None = 30.0,
         **kwargs: Any,
     ):

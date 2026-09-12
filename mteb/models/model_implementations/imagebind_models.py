@@ -99,7 +99,7 @@ class ImageBindWrapper(AbsEncoder):
         from torchvision import transforms
 
         sample_rate = 16_000
-        # clip_duration=2, clips_per_video=3 (ImageBind data.py)
+        # clip_duration=2, clips_per_video=3 — https://github.com/facebookresearch/ImageBind/blob/main/imagebind/data.py
         clip_sampler = ConstantClipsPerVideoSampler(clip_duration=2, clips_per_video=3)
         normalize = transforms.Normalize(mean=-4.268, std=9.138)
 

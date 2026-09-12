@@ -336,7 +336,7 @@ class ColQwen2_5OmniWrapper(ColPaliEngineWrapper):  # noqa: N801
         device: str | None = None,
         max_frames: int | None = 64,
         num_frames: int | None = None,
-        # 300 s: Qwen2.5-Omni chunk_length=300 (applied by the processor)
+        # 300 s: Qwen2.5-Omni chunk_length=300 — https://huggingface.co/Qwen/Qwen2.5-Omni-7B/blob/main/preprocessor_config.json
         max_audio_length: int | None = None,
         **kwargs: Any,
     ):

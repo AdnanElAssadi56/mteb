@@ -54,7 +54,7 @@ class GVEWrapper(AbsEncoder):
         *,
         device: str | None = None,
         max_length: int = 4096,
-        # fps=2: qwen-vl-utils FPS=2.0; max_frames is an mteb cap
+        # fps=2: qwen-omni-utils FPS=2.0 — https://github.com/QwenLM/Qwen2.5-Omni/blob/main/qwen-omni-utils/src/qwen_omni_utils/v2_5/vision_process.py
         fps: float | None = 2.0,
         max_frames: int | None = 32,
         num_frames: int | None = None,

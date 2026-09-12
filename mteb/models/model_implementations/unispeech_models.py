@@ -25,7 +25,7 @@ class UniSpeechWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # 20 s: s3prl UnfoldChunkByFrame, 2000 frames
+        # 20 s: s3prl UnfoldChunkByFrame, 2000 frames — https://github.com/s3prl/s3prl/blob/main/s3prl/dataset/chunking.py
         window_seconds: float | None = 20.0,
         **kwargs: Any,
     ):

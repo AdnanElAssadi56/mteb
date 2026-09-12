@@ -130,7 +130,7 @@ class UniteWrapper(AbsEncoder):
         max_image_tokens: int = 1280,
         fps: float | None = None,
         max_frames: int | None = None,
-        # 32 frames: UNITE training configuration
+        # 32 frames: training configuration — https://huggingface.co/friedrichor/Unite-Base-Qwen2-VL-2B
         num_frames: int | None = 32,
         target_sampling_rate: int = 16000,
         video_max_pixels: int = 360 * 420,

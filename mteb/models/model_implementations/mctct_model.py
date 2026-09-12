@@ -88,7 +88,7 @@ class MCTCTWrapper(AbsEncoder):
         model_name: str,
         revision: str,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        # 27.6 s: max_position_embeddings=920 at 30 ms/frame (config.json)
+        # 27.6 s: max_position_embeddings=920 at 30 ms/frame — https://huggingface.co/speechbrain/m-ctc-t-large/blob/main/config.json
         window_seconds: float | None = 27.6,
         **kwargs: Any,
     ):
